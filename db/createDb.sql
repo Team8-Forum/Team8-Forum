@@ -24,13 +24,13 @@ create table users
         unique (username)
 );
 
-create table admin_phones
+create table admins_phones
 (
     user_id  int null,
     phone_id int null,
-    constraint admin_phones_phones_phone_id_fk
+    constraint admins_phones_phones_phone_id_fk
         foreign key (phone_id) references phones (phone_id),
-    constraint admin_phones_users_user_id_fk
+    constraint admins_phones_users_user_id_fk
         foreign key (user_id) references users (user_id)
 );
 
@@ -69,3 +69,4 @@ create table likes
     constraint likes_user___fk
         foreign key (user_id) references users (user_id)
 );
+
