@@ -14,11 +14,18 @@ create table phones
     phone_id     int         not null
         primary key,
     phone_number varchar(70) not null,
-    admin_id     int         not null,
     constraint phones_pk2
-        unique (phone_number),
-    constraint phones_admins_fk
-        foreign key (admin_id) references admins (admin_id)
+        unique (phone_number)
+);
+
+create table admins_phones
+(
+    admin_id int null,
+    phone_id int null,
+    constraint admins_phones_admins_admin_id_fk
+        foreign key (admin_id) references admins (admin_id),
+    constraint admins_phones_phones_phone_id_fk
+        foreign key (phone_id) references phones (phone_id)
 );
 
 create table users
@@ -45,7 +52,6 @@ create table posts
     user_id int          not null,
     title   varchar(100) not null,
     content text         not null,
-    likes   int          not null,
     constraint posts_users_fk
         foreign key (user_id) references users (user_id)
 );
@@ -62,5 +68,19 @@ create table comments
     constraint comments_users__fk
         foreign key (user_id) references users (user_id)
 );
+
+create table likes
+(
+    like_id int auto_increment
+        primary key,
+    post_id int null,
+    user_id int null,
+    constraint likes_post___fk
+        foreign key (post_id) references posts (post_id),
+    constraint likes_user___fk
+        foreign key (user_id) references users (user_id)
+);
+
+
 
 
