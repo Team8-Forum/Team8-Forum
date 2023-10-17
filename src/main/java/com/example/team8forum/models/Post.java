@@ -1,12 +1,33 @@
 package com.example.team8forum.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import jakarta.persistence.*;
+
+import java.util.List;
 import java.util.Objects;
 
+
+@Entity
+@Table(name = "posts")
+
 public class Post {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "post_id")
     private int id;
-    private  User createdBy;
+
+
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User createdBy;
+
+    @Column(name = "title")
     private String title;
+
+    @Column(name = "content")
     private String content;
+    @Column(name = "likes")
+    private int likes;
 
     public Post() {
     }
@@ -15,6 +36,7 @@ public class Post {
         this.createdBy = createdBy;
         this.title = title;
         this.content = content;
+        this.likes = 0;
     }
 
     public User getCreatedBy() {
