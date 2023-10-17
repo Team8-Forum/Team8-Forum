@@ -2,9 +2,12 @@ package com.example.team8forum.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import org.springframework.data.annotation.Persistent;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 
 
 @Entity
@@ -29,6 +32,12 @@ public class Post {
     @Column(name = "likes")
     private int likes;
 
+    @OneToMany
+    @JoinColumn(name = "post_id")
+    private List<Comment> comments;
+
+    @Column(name = "creation_date")
+    private Date creationDate;
     public Post() {
     }
 
@@ -37,6 +46,7 @@ public class Post {
         this.title = title;
         this.content = content;
         this.likes = 0;
+        this.creationDate = new Date();
     }
 
     public User getCreatedBy() {
