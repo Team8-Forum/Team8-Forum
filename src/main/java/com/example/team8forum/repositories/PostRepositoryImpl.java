@@ -3,7 +3,6 @@ package com.example.team8forum.repositories;
 import com.example.team8forum.exceptions.EntityNotFoundException;
 import com.example.team8forum.models.FilterOptions;
 import com.example.team8forum.models.Post;
-import com.example.team8forum.models.User;
 import com.example.team8forum.repositories.contracts.PostRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
