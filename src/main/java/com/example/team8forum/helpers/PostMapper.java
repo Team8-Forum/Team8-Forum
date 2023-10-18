@@ -29,7 +29,7 @@ public class PostMapper {
         Post post = new Post();
         post.setTitle(dto.getTitle());
         post.setContent(dto.getContent());
-        post.setCreatedBy(userService.getById(dto.getCreatedBy().getId()));
+        post.setCreatedBy(dto.getCreatedBy());
         return post;
     }
 }
