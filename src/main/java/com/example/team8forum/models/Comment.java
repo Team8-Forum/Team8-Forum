@@ -14,20 +14,20 @@ public class Comment {
 
     @Column(name = "comment")
     private String comment;
-
-    @Column(name = "post_id")
-    private int postId;
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private Post post;
 
     @ManyToOne
-    @Column(name = "user_id")
+    @JoinColumn(name = "user_id")
     private User createdBy;
 
     public Comment() {
     }
 
-    public Comment(String comment, int postId, User user) {
+    public Comment(String comment, Post post, User user) {
         this.comment = comment;
-        this.postId = postId;
+        this.post = post;
         this.createdBy = user;
     }
 
@@ -43,12 +43,12 @@ public class Comment {
         this.comment = comment;
     }
 
-    public int getPostId() {
-        return postId;
+    public Post getPostId() {
+        return post;
     }
 
-    public void setPostId(int postId) {
-        this.postId = postId;
+    public void setPost(Post post) {
+        this.post = post;
     }
 
     public User getCreatedBy() {
