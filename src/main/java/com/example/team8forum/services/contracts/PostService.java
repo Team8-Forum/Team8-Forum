@@ -15,5 +15,5 @@ public interface PostService {
 
     void update(Post beer, User user);
 
-    void delete(Post postToDelete, User user);
+    void delete(int id, User user);
 }

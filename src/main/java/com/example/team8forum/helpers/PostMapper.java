@@ -17,7 +17,7 @@ public class PostMapper {
         this.userService = userService;
     }
 
-    private Post fromDto(int id, PostDto dto) {
+    public Post fromDto(int id, PostDto dto) {
         Post post = fromDto(dto);
         post.setId(id);
         Post repositoryPost = postService.get(id);
