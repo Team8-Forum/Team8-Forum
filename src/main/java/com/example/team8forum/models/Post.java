@@ -4,10 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.Persistent;
 
-import java.util.Date;
-import java.util.List;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 
 @Entity
@@ -46,6 +43,7 @@ public class Post {
         this.title = title;
         this.content = content;
         this.likes = 0;
+        this.comments = new ArrayList<>();
         this.creationDate = new Date();
     }
 

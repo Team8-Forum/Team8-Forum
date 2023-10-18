@@ -9,15 +9,15 @@ import java.util.Optional;
 
 
 public interface PostRepository {
-    List<Post> get(FilterOptions filterOptions);
+    List<Post> getAll(FilterOptions filterOptions);
 
     Post get(int id);
 
     Post get(String name);
 
-    void create(Post beer);
+    void create(Post post);
 
-    void update(Post beer);
+    void update(Post post);
 
     void delete(Post id);
 
