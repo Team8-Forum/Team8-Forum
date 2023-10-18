@@ -1,5 +1,6 @@
-package com.example.team8forum.models;
+package com.example.team8forum.models.dtos;
 
+import com.example.team8forum.models.User;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 

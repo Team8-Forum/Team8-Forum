@@ -2,6 +2,7 @@ package com.example.team8forum.models;
 
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 
 import java.util.Objects;
@@ -31,22 +32,29 @@ public class User {
     @Column(name = "email", unique = true)
     private String email;
 
-    @Column(name = "is_admin")
+    @JsonIgnore
+    @Column(name = "is_admin", columnDefinition = "boolean default false")
     private boolean isAdmin;
 
-    @Column(name = "is_blocked")
+    @JsonIgnore
+    @Column(name = "is_blocked", columnDefinition = "boolean default false")
     private boolean isBlocked;
 
-//Todo
-//    @OneToOne
-//    @JoinTable(
-//            name = "admins_phones",
-//            joinColumns = @JoinColumn(name = "user_id"),
-//            inverseJoinColumns = @JoinColumn(name = "phone_id")
-//    )
-//    private String phone;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private PhoneNumber phoneNumber;
 
     public User(){
+    }
+
+    public User(String firstName, String lastName, String email,
+                String username, String password) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.username = username;
+        this.password = password;
     }
 
     public int getId() {
@@ -111,6 +119,14 @@ public class User {
 
     public void setBlocked(boolean blocked) {
         isBlocked = blocked;
+    }
+
+    public PhoneNumber getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public void setPhoneNumber(PhoneNumber phone) {
+        this.phoneNumber = phone;
     }
 
     @Override

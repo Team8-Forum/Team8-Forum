@@ -18,16 +18,17 @@ public class Comment {
     @Column(name = "post_id")
     private int postId;
 
+    @ManyToOne
     @Column(name = "user_id")
-    private int userId;
+    private User createdBy;
 
     public Comment() {
     }
 
-    public Comment(String comment, int postId, int userId) {
+    public Comment(String comment, int postId, User user) {
         this.comment = comment;
         this.postId = postId;
-        this.userId = userId;
+        this.createdBy = user;
     }
 
     public int getCommentId() {
@@ -50,12 +51,12 @@ public class Comment {
         this.postId = postId;
     }
 
-    public int getUserId() {
-        return userId;
+    public User getCreatedBy() {
+        return createdBy;
     }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
+    public void setCreatedBy(User user) {
+        this.createdBy = user;
     }
 
 

@@ -1,4 +1,4 @@
-package com.example.team8forum.repositories;
+package com.example.team8forum.repositories.contracts;
 
 import com.example.team8forum.models.FilterOptions;
 import com.example.team8forum.models.Post;

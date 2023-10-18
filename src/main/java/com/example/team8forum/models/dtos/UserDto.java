@@ -1,4 +1,4 @@
-package com.example.team8forum.models;
+package com.example.team8forum.models.dtos;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
@@ -15,12 +15,6 @@ public class UserDto {
 
     @NotNull(message = "Email can't be empty")
     private String email;
-
-    @NotNull(message = "Username can't be empty")
-    private String username;
-
-    @NotNull(message = "Password can't be empty")
-    private String password;
 
     public UserDto(){
     }
@@ -47,21 +41,5 @@ public class UserDto {
 
     public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getUsername() {
-        return username;
-    }
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
     }
 }

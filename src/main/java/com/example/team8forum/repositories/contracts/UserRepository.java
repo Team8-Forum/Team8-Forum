@@ -1,4 +1,4 @@
-package com.example.team8forum.repositories;
+package com.example.team8forum.repositories.contracts;
 
 import com.example.team8forum.models.User;
 
@@ -6,11 +6,11 @@ import java.util.List;
 
 public interface UserRepository {
 
-    List<User> get();
+    List<User> getAll();
 
-    User get(int id);
+    User getById(int id);
 
-    User get(String username);
+    User getByUsername(String username);
 
     void create(User user);
 
