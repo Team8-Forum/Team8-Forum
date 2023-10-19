@@ -1,6 +1,7 @@
 package com.example.team8forum.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
 import org.springframework.data.annotation.Persistent;
 
@@ -26,8 +27,6 @@ public class Post {
 
     @Column(name = "content")
     private String content;
-    @Column(name = "likes")
-    private int likes;
 
     @OneToMany
     @JoinColumn(name = "post_id")
@@ -35,6 +34,15 @@ public class Post {
 
     @Column(name = "creation_date")
     private Date creationDate;
+
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            name = "posts_likes",
+            joinColumns = @JoinColumn(name = "post_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_id")
+    )
+    private Set<User> likes;
     public Post() {
     }
 
@@ -42,7 +50,6 @@ public class Post {
         this.createdBy = createdBy;
         this.title = title;
         this.content = content;
-        this.likes = 0;
         this.comments = new ArrayList<>();
         this.creationDate = new Date();
     }
@@ -71,20 +78,36 @@ public class Post {
         this.content = content;
     }
 
-    public int getLikes() {
-        return likes;
-    }
-
-    public void setLikes(int likes) {
-        this.likes = likes;
-    }
-
     public int getId() {
         return id;
     }
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public List<Comment> getComments() {
+        return comments;
+    }
+
+    public void setComments(List<Comment> comments) {
+        this.comments = comments;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
+    }
+
+    public void setCreationDate(Date creationDate) {
+        this.creationDate = creationDate;
+    }
+
+    public Set<User> getLikes() {
+        return likes;
+    }
+
+    public void setLikes(Set<User> likes) {
+        this.likes = likes;
     }
 
     @Override

@@ -1,20 +1,20 @@
 package com.example.team8forum.services;
 
-import com.example.team8forum.exceptions.AuthorizationException;
 import com.example.team8forum.exceptions.EntityDuplicateException;
 import com.example.team8forum.exceptions.EntityNotFoundException;
 import com.example.team8forum.models.PhoneNumber;
 import com.example.team8forum.models.User;
+import com.example.team8forum.models.UserFilterOptions;
 import com.example.team8forum.repositories.contracts.PhoneNumberRepository;
 import com.example.team8forum.repositories.contracts.UserRepository;
 import com.example.team8forum.services.contracts.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.InputMismatchException;
 import java.util.List;
 
-import static com.example.team8forum.helpers.ValidationHelpers.*;
+import static com.example.team8forum.helpers.ValidationHelpers.validateUserIsAdmin;
+import static com.example.team8forum.helpers.ValidationHelpers.validateUserIsAdminOrAccountOwner;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -29,8 +29,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getAll() {
-        return userRepository.getAll();
+    public List<User> getAll(UserFilterOptions filterOptions, User user) {
+        validateUserIsAdmin(user);
+        return userRepository.getAll(filterOptions);
     }
 
     @Override
@@ -50,9 +51,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void createPhoneNumber(User executingUser, int id, PhoneNumber phoneToCreate) {
+    public void createPhoneNumber(User executeUser, int id, PhoneNumber phoneToCreate) {
         User userToGetPhone = getById(id);
-        validateUserIsAdmin(executingUser);
+        validateUserIsAdmin(executeUser);
         validateUserIsAdmin(userToGetPhone);
         boolean duplicateExists = true;
         try {
@@ -69,27 +70,27 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void update(User executingUser, User userToUpdate) {
-        validateUserIsAdminOrAccountOwner(executingUser, userToUpdate);
+    public void update(User executeUser, User updateUser) {
+        validateUserIsAdminOrAccountOwner(executeUser, updateUser);
         boolean duplicateExists = true;
         try {
-            User existingUser = userRepository.getByUsername(userToUpdate.getUsername());
-            if (existingUser.getId() == userToUpdate.getId()) {
+            User existingUser = userRepository.getByUsername(updateUser.getUsername());
+            if (existingUser.getId() == updateUser.getId()) {
                 duplicateExists = false;
             }
         } catch (EntityNotFoundException e) {
             duplicateExists = false;
         }
         if (duplicateExists) {
-            throw new EntityDuplicateException("User", "email", userToUpdate.getEmail());
+            throw new EntityDuplicateException("User", "email", updateUser.getEmail());
         }
-        userRepository.update(userToUpdate);
+        userRepository.update(updateUser);
     }
 
     @Override
-    public User updateAdmin(User executingUser, int id) {
+    public User updateAdmin(User executeUser, int id) {
         User userToBeUpdated = getById(id);
-        validateUserIsAdmin(executingUser);
+        validateUserIsAdmin(executeUser);
         boolean newAdminStatus = !userToBeUpdated.isAdmin();
         userToBeUpdated.setAdmin(newAdminStatus);
         userRepository.update(userToBeUpdated);
@@ -97,9 +98,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User updateBlocked(User executingUser, int id) {
+    public User updateBlocked(User executeUser, int id) {
         User userToBeUpdated = getById(id);
-        validateUserIsAdmin(executingUser);
+        validateUserIsAdmin(executeUser);
         boolean newBlockedStatus = !userToBeUpdated.isBlocked();
         userToBeUpdated.setBlocked(newBlockedStatus);
         userRepository.update(userToBeUpdated);
@@ -107,9 +108,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updatePhoneNumber(User executingUser, int id, PhoneNumber newPhone) {
+    public void updatePhoneNumber(User executeUser, int id, PhoneNumber newPhone) {
         User userToGetPhone = getById(id);
-        validateUserIsAdmin(executingUser);
+        validateUserIsAdmin(executeUser);
         validateUserIsAdmin(userToGetPhone);
         PhoneNumber oldPhone = phoneNumberRepository.getByUserId(userToGetPhone.getId());
         checkIfPhoneExists(newPhone);
@@ -118,23 +119,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public PhoneNumber deletePhoneNumber(User executingUser, int userToBeUpdatedId) {
-        User userToGetPhoneDeleted = getById(userToBeUpdatedId);
-        validateUserIsAdminOrAccountOwner(executingUser, userToGetPhoneDeleted);
+    public PhoneNumber deletePhoneNumber(User executeUser, int id) {
+        User userToGetPhoneDeleted = getById(id);
+        validateUserIsAdminOrAccountOwner(executeUser, userToGetPhoneDeleted);
         validateUserIsAdmin(userToGetPhoneDeleted);
         phoneNumberRepository.delete(userToGetPhoneDeleted.getPhoneNumber());
         return userToGetPhoneDeleted.getPhoneNumber();
-    }
-
-    @Override
-    public void changePassword(User user, String oldPassword, String newPassword, String confirmedNewPassword) {
-        if(!user.getPassword().equals(oldPassword)) {
-            throw new AuthorizationException("Your old password is incorrect");
-        }
-
-        if(!newPassword.equals(confirmedNewPassword)) {
-            throw new InputMismatchException("New password do not match with confirmed one");
-        }
     }
 
     private void checkIfUserIsUnique(User user) {

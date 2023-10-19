@@ -2,13 +2,13 @@ package com.example.team8forum.services.contracts;
 
 import com.example.team8forum.models.PhoneNumber;
 import com.example.team8forum.models.User;
+import com.example.team8forum.models.UserFilterOptions;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface UserService {
 
-    List<User> getAll();
+    List<User> getAll(UserFilterOptions filterOptions,User user);
 
     User getById(int id);
 
@@ -27,6 +27,4 @@ public interface UserService {
     void updatePhoneNumber(User executingUser, int id, PhoneNumber newPhone);
 
     PhoneNumber deletePhoneNumber(User executingUser, int userToBeUpdatedId);
-
-    void changePassword(User user, String oldPassword, String newPassword, String confirmedNewPassword);
 }
