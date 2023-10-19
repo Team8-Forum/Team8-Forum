@@ -4,11 +4,15 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.time.LocalDateTime;
+
 public class CommentDto {
         @NotNull
         private int postId;
         @NotBlank(message = "You may not leave a blank comment.")
         private String content;
+
+        private LocalDateTime createdDate;
 
         public CommentDto() {
         }
@@ -20,6 +24,8 @@ public class CommentDto {
             this.content = content;
         }
 
+        public int getPostId() { return postId; }
 
-    }
+        public void setPostId(int postId) { this.postId = postId; }
+}
 

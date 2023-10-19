@@ -3,16 +3,16 @@ package com.example.team8forum.repositories.contracts;
 import com.example.team8forum.models.Comment;
 
 import java.util.List;
+import java.util.Set;
 
 public interface CommentRepository {
 
-   // List<Comment> get(int postId);
 
-    List<Comment> findCommentsByPostId(int postId);
+    Set<Comment> findCommentsByPostId(int postId);
 
     Comment findCommentById(int id);
 
-    void create(Comment comment);
+    Comment create(Comment comment);
 
     void update(Comment comment);
 

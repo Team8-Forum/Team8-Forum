@@ -5,10 +5,13 @@ import com.example.team8forum.models.Comment;
 import com.example.team8forum.repositories.contracts.CommentRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Repository
 public class CommentRepositoryImpl implements CommentRepository {
@@ -21,12 +24,12 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
-    public List<Comment> findCommentsByPostId(int postId) {
+    public Set<Comment> findCommentsByPostId(int postId) {
         try (Session session = sessionFactory.openSession()) {
-            String hql = "FROM Comment c WHERE c.post.id = :postId";
-            return session.createQuery(hql, Comment.class)
-                    .setParameter("postId", postId)
-                    .list();
+            String hql = "SELECT c FROM Comment c JOIN c.post p WHERE p.id= :postId";
+            Query<Comment> query = session.createQuery(hql, Comment.class);
+            query.setParameter("postId", postId);
+            return new HashSet<>(query.getResultList());
         }
     }
 
@@ -42,12 +45,13 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
-    public void create(Comment comment) {
+    public Comment create(Comment comment) {
         try (Session session = sessionFactory.openSession()){
             session.beginTransaction();
             session.persist(comment);
             session.getTransaction().commit();
         }
+        return comment;
     }
 
     @Override

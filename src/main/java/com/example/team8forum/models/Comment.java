@@ -2,6 +2,8 @@ package com.example.team8forum.models;
 
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+
 
 @Entity
 @Table(name = "comments")
@@ -14,6 +16,7 @@ public class Comment {
 
     @Column(name = "comment")
     private String comment;
+
     @ManyToOne
     @JoinColumn(name = "post_id")
     private Post post;
@@ -21,6 +24,8 @@ public class Comment {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User createdBy;
+
+   // private LocalDateTime createdDate;
 
     public Comment() {
     }
@@ -34,6 +39,8 @@ public class Comment {
     public int getCommentId() {
         return id;
     }
+
+    public int setCommentId() { return id; }
 
     public String getComment() {
         return comment;
