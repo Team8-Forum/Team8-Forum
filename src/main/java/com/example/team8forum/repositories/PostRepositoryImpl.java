@@ -58,7 +58,7 @@ public class PostRepositoryImpl implements PostRepository {
                         .append(String.join(" and ", filters));
             }
             queryString.append(generateOrderBy(filterOptions));
-
+            System.out.print(queryString);
             Query<Post> query = session.createQuery(queryString.toString(), Post.class);
             query.setProperties(params);
             return query.list();

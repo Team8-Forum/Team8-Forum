@@ -28,7 +28,7 @@ public class Post {
     @Column(name = "content")
     private String content;
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "post_id")
     private List<Comment> comments;
 
