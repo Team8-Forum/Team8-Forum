@@ -15,6 +15,10 @@ public interface PostRepository {
 
     Post get(String name);
 
+    List<Post> getTenMostCommentedPosts();
+
+    List<Post> getTenMostRecent();
+
     void create(Post post);
 
     void update(Post post);

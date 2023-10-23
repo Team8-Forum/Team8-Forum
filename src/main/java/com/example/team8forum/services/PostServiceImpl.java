@@ -13,6 +13,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+import static com.example.team8forum.helpers.ValidationHelpers.validateUserIsBlocked;
+
 @Service
 public class PostServiceImpl implements PostService {
 
@@ -33,6 +35,16 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    public List<Post> getMostCommentedPosts() {
+        return repository.getTenMostCommentedPosts();
+    }
+
+    @Override
+    public List<Post> getTenMostRecent() {
+        return repository.getTenMostRecent();
+    }
+
+    @Override
     public void create(Post post, User user) {
         boolean duplicateExists = true;
         try {
@@ -47,6 +59,20 @@ public class PostServiceImpl implements PostService {
 
         post.setCreatedBy(user);
         repository.create(post);
+    }
+
+    @Override
+    public Post likePost(User user, int postId) {
+        validateUserIsBlocked(user);
+        Post post = get(postId);
+        boolean voted = post.getLikes().contains(user);
+        if (voted) {
+            post.getLikes().remove(user);
+        } else {
+            post.getLikes().add(user);
+        }
+        repository.update(post);
+        return post;
     }
 
     @Override

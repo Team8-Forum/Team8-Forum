@@ -1,19 +1,18 @@
 package com.example.team8forum.repositories;
 
 import com.example.team8forum.exceptions.EntityNotFoundException;
+import com.example.team8forum.models.Comment;
 import com.example.team8forum.models.FilterOptions;
 import com.example.team8forum.models.Post;
 import com.example.team8forum.repositories.contracts.PostRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.query.NativeQuery;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Repository
 public class PostRepositoryImpl implements PostRepository {
@@ -89,6 +88,34 @@ public class PostRepositoryImpl implements PostRepository {
             }
 
             return result.get(0);
+        }
+    }
+
+    @Override
+    public List<Post> getTenMostCommentedPosts(){
+        try (Session session = sessionFactory.openSession()) {
+            NativeQuery<Post> query = session.createNativeQuery(
+                    "select distinct p.post_id, p.title, p.content, p.creation_date, p.user_id, COUNT(*) as count " +
+                            "from posts p " +
+                            "join comments c on p.post_id = c.post_id " +
+                            "group by c.post_id " +
+                            "order by count desc " +
+                            "limit 10;");
+            query.addEntity(Post.class);
+            return query.list();
+        }
+    }
+
+    @Override
+    public List<Post> getTenMostRecent() {
+        try (Session session = sessionFactory.openSession()) {
+            NativeQuery<Post> query = session.createNativeQuery(
+                    "select distinct p.post_id, p.title, p.content, p.creation_date, p.user_id " +
+                            "from posts p " +
+                            "order by creation_date desc " +
+                            "limit 10;");
+            query.addEntity(Post.class);
+            return query.list();
         }
     }
 

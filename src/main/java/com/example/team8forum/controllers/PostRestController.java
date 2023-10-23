@@ -76,6 +76,21 @@ public class PostRestController {
         }
     }
 
+    @PostMapping("/{id}/like")
+    public Post likePost(@RequestHeader HttpHeaders headers, @PathVariable int id) {
+        try {
+            User user = authenticationHelper.tryGetUser(headers);
+            Post post = service.likePost(user, id);
+            return post;
+        } catch (EntityDuplicateException e) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, e.getMessage());
+        } catch (EntityNotFoundException e) {
+            throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
+        } catch (AuthorizationException e) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, e.getMessage());
+        }
+    }
+
     @PutMapping("/{id}")
     public Post update(@RequestHeader HttpHeaders headers, @PathVariable int id,
                        @Valid @RequestBody PostDto postDto) {

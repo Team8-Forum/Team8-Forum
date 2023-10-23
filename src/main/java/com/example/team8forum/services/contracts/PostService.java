@@ -11,7 +11,13 @@ public interface PostService {
 
     Post get(int id);
 
+    List<Post> getMostCommentedPosts();
+
+    List<Post> getTenMostRecent();
+
     void create(Post beer, User user);
+
+    Post likePost(User user, int postId);
 
     void update(Post beer, User user);
 
