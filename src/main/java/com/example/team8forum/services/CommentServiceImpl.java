@@ -1,10 +1,10 @@
 package com.example.team8forum.services;
 
+import com.example.team8forum.exceptions.AuthorizationException;
 import com.example.team8forum.models.Comment;
 
 import com.example.team8forum.models.Post;
 import com.example.team8forum.models.User;
-import com.example.team8forum.models.dtos.CommentDto;
 import com.example.team8forum.repositories.contracts.CommentRepository;
 import com.example.team8forum.repositories.contracts.PostRepository;
 import com.example.team8forum.services.contracts.CommentService;
@@ -34,13 +34,17 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Comment create(CommentDto commentDto, User user) {
-        validateUserIsBlocked(user);
-        Comment comment = new Comment();
-        Post post = postRepository.get(commentDto.getPostId());
+    public Comment getCommentById(int id) {
+        return commentRepository.findCommentById(id);
+    }
 
+
+    @Override
+    public Comment create(Comment comment, User user) {
+        validateUserIsBlocked(user);
+        Post post = comment.getPost();
         comment.setPost(post);
-        comment.setComment(commentDto.getContent());
+        comment.setComment(comment.getComment());
         comment.setCreatedBy(user);
         //comment.setCreatedDate(LocalDateTime.now());
 
@@ -57,9 +61,10 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public void delete(int id, User user) {
         Comment comment = commentRepository.findCommentById(id);
-        validateUserIsAdminOrCommentCreator(user, comment);
-        validateUserIsBlocked(user);
-        commentRepository.delete(comment);
+        if (!(user.isAdmin()|| comment.getCreatedBy().equals(user))) {
+            throw new AuthorizationException("You may not remove this comment.");
+        }
+        commentRepository.delete(id);
     }
 
 }

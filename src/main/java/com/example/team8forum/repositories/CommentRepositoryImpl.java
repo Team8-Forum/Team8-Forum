@@ -64,10 +64,11 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
-    public void delete(Comment comment) {
+    public void delete(int id) {
+        Comment commentToDelete = findCommentById(id);
         try (Session session = sessionFactory.openSession()){
             session.beginTransaction();
-            session.remove(comment);
+            session.remove(commentToDelete);
             session.getTransaction().commit();
         }
     }

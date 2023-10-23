@@ -40,7 +40,7 @@ public class Comment {
         return id;
     }
 
-    public int setCommentId() { return id; }
+    public void setCommentId(int id) { this.id = id; }
 
     public String getComment() {
         return comment;
@@ -50,7 +50,7 @@ public class Comment {
         this.comment = comment;
     }
 
-    public Post getPostId() {
+    public Post getPost() {
         return post;
     }
 

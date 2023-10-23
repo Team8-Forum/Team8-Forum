@@ -15,7 +15,9 @@ public interface CommentService {
 
     Set<Comment> get(int postId);
 
-    Comment create(CommentDto commentDto, User user);
+    Comment getCommentById(int id);
+
+    Comment create(Comment comment, User user);
 
     void update(Comment comment, User user);
 

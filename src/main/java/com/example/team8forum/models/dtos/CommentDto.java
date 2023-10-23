@@ -11,7 +11,8 @@ public class CommentDto {
         private int postId;
         @NotBlank(message = "You may not leave a blank comment.")
         private String content;
-
+        @NotBlank
+        private String username;
         private LocalDateTime createdDate;
 
         public CommentDto() {
@@ -27,5 +28,9 @@ public class CommentDto {
         public int getPostId() { return postId; }
 
         public void setPostId(int postId) { this.postId = postId; }
+
+        public String getUsername() { return username; }
+
+        public void setUsername(String userName) { this.username = userName; }
 }
 
