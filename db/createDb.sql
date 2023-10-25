@@ -1,12 +1,3 @@
-create table phones
-(
-    phone_id     int         not null
-        primary key,
-    phone_number varchar(70) not null,
-    constraint phones_pk2
-        unique (phone_number)
-);
-
 create table users
 (
     user_id    int auto_increment
@@ -24,24 +15,23 @@ create table users
         unique (username)
 );
 
-create table admins_phones
+create table phone_numbers
 (
-    user_id  int null,
-    phone_id int null,
-    constraint admins_phones_phones_phone_id_fk
-        foreign key (phone_id) references phones (phone_id),
-    constraint admins_phones_users_user_id_fk
+    user_id      int         not null
+        primary key,
+    phone_number varchar(10) null,
+    constraint phone_numbers_users_user_id_fk
         foreign key (user_id) references users (user_id)
 );
 
 create table posts
 (
-    post_id int auto_increment
+    post_id       int auto_increment
         primary key,
-    user_id int           not null,
-    title   varchar(100)  not null,
-    content text          not null,
-    likes   int default 0 not null,
+    user_id       int                                  not null,
+    title         varchar(100)                         not null,
+    content       text                                 not null,
+    creation_date datetime default current_timestamp() not null,
     constraint posts_users_fk
         foreign key (user_id) references users (user_id)
 );
@@ -59,15 +49,13 @@ create table comments
         foreign key (user_id) references users (user_id)
 );
 
-create table likes
+create table posts_likes
 (
-    like_id int auto_increment
-        primary key,
-    post_id int null,
     user_id int null,
-    constraint likes_post___fk
+    post_id int null,
+    constraint posts_likes_posts_post_id_fk
         foreign key (post_id) references posts (post_id),
-    constraint likes_user___fk
+    constraint posts_likes_users_user_id_fk
         foreign key (user_id) references users (user_id)
 );
 

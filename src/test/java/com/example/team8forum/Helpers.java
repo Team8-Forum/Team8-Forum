@@ -1,6 +1,7 @@
 package com.example.team8forum;
 
 import com.example.team8forum.models.Comment;
+import com.example.team8forum.models.PhoneNumber;
 import com.example.team8forum.models.Post;
 import com.example.team8forum.models.User;
 import com.example.team8forum.models.dtos.CommentDto;
@@ -74,6 +75,12 @@ public class Helpers {
         dto.setUsername(createMockUser().getUsername());
         dto.setPostId(createMockPost().getId());
         return dto;
+    }
+
+    public static PhoneNumber createMockPhoneNumber() {
+        var mockPhone = new PhoneNumber();
+        mockPhone.setPhoneNumber("2312323113");
+        return mockPhone;
     }
 
     public static String toJson(final Object obj) {
