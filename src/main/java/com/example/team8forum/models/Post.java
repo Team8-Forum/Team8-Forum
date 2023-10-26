@@ -3,6 +3,7 @@ package com.example.team8forum.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.Persistent;
 
 import java.util.*;
@@ -32,7 +33,8 @@ public class Post {
     @JoinColumn(name = "post_id")
     private List<Comment> comments;
 
-    @Column(name = "creation_date")
+    @Column(name = "creation_date", nullable = false)
+    @CreationTimestamp
     private Date creationDate;
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

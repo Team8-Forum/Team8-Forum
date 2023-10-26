@@ -32,6 +32,11 @@ public class User {
     @Column(name = "email", unique = true)
     private String email;
 
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @OneToOne
+    @JoinColumn(name = "user_id")
+    private PhoneNumber phoneNumber;
+
     @JsonIgnore
     @Column(name = "is_admin", columnDefinition = "boolean default false")
     private boolean isAdmin;
@@ -39,11 +44,6 @@ public class User {
     @JsonIgnore
     @Column(name = "is_blocked", columnDefinition = "boolean default false")
     private boolean isBlocked;
-
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @OneToOne
-    @JoinColumn(name = "user_id")
-    private PhoneNumber phoneNumber;
 
     public User(){
     }

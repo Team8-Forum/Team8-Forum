@@ -29,7 +29,6 @@ public class PostMapper {
         Post post = new Post();
         post.setTitle(dto.getTitle());
         post.setContent(dto.getContent());
-        post.setCreatedBy(dto.getCreatedBy());
         return post;
     }
 }

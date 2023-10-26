@@ -5,9 +5,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
 public class PostDto {
-    @NotNull(message = "The post must be created by a registered user.")
-    private User createdBy;
-
     @NotNull(message = "The post must have a title.")
     @Size(min = 16, max = 64, message = "The title must be between 16 and 64 symbols")
     private String title;
@@ -17,14 +14,6 @@ public class PostDto {
     private String content;
 
     public PostDto() {
-    }
-
-    public User getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(User createdBy) {
-        this.createdBy = createdBy;
     }
 
     public String getTitle() {

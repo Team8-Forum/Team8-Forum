@@ -13,7 +13,6 @@ public class CommentDto {
         private String content;
         @NotBlank
         private String username;
-        private LocalDateTime createdDate;
 
         public CommentDto() {
         }
