@@ -1,15 +1,23 @@
 package com.example.team8forum;
 
-import com.example.team8forum.models.Comment;
-import com.example.team8forum.models.PhoneNumber;
-import com.example.team8forum.models.Post;
-import com.example.team8forum.models.User;
+import com.example.team8forum.models.*;
 import com.example.team8forum.models.dtos.CommentDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.Date;
 
 
 public class Helpers {
+
+    public static FilterOptions createMockFilterOptions() {
+      return new FilterOptions("title",
+              0,
+              10,
+              new Date(),
+              "sort",
+              "order"
+              );
+    }
 
     public static User createMockAdmin() {
         User mockUser = createMockUser();
