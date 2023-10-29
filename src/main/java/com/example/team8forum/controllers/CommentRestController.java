@@ -11,6 +11,7 @@ import com.example.team8forum.models.User;
 import com.example.team8forum.models.dtos.CommentDto;
 import com.example.team8forum.services.contracts.CommentService;
 import com.example.team8forum.services.contracts.PostService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -42,9 +43,9 @@ public class CommentRestController {
         this.authenticationHelper = authenticationHelper;
     }
 
-    @PostMapping()
+    @PostMapping("/post/{postId}")
     public Comment create (@RequestHeader HttpHeaders headers,
-            @RequestBody CommentDto commentDto, @RequestParam int postId){
+                           @Valid @RequestBody CommentDto commentDto, @PathVariable int postId){
         try {
             User user = authenticationHelper.tryGetUser(headers);
             Comment comment = commentMapper.fromDto(commentDto);
