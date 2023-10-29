@@ -10,6 +10,7 @@ import com.example.team8forum.models.Post;
 import com.example.team8forum.models.User;
 import com.example.team8forum.models.dtos.CommentDto;
 import com.example.team8forum.services.contracts.CommentService;
+import com.example.team8forum.services.contracts.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -26,25 +27,29 @@ public class CommentRestController {
 
     private final CommentService commentService;
 
+    private final PostService postService;
+
     private final CommentMapper commentMapper;
 
     private final AuthenticationHelper authenticationHelper;
 
     @Autowired
-    public CommentRestController(CommentService commentService, CommentMapper commentMapper,
+    public CommentRestController(CommentService commentService, PostService postService, CommentMapper commentMapper,
                                  AuthenticationHelper authenticationHelper) {
         this.commentService = commentService;
+        this.postService = postService;
         this.commentMapper = commentMapper;
         this.authenticationHelper = authenticationHelper;
     }
 
-    @PostMapping
+    @PostMapping()
     public Comment create (@RequestHeader HttpHeaders headers,
-            @RequestBody CommentDto commentDto){
+            @RequestBody CommentDto commentDto, @RequestParam int postId){
         try {
             User user = authenticationHelper.tryGetUser(headers);
             Comment comment = commentMapper.fromDto(commentDto);
-            commentService.create(comment, user);
+            Post post = postService.get(postId);
+            commentService.create(comment, user, post);
             return comment;
     } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
@@ -60,13 +65,12 @@ public class CommentRestController {
     }
 
     @PutMapping("/{commentId}")
-    public Comment updateComment(@RequestHeader HttpHeaders headers, @PathVariable int id,
+    public void updateComment(@RequestHeader HttpHeaders headers, @PathVariable int commentId,
             @RequestBody CommentDto commentDto) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
-            Comment comment = commentMapper.fromDto(id, commentDto);
-            commentService.update(comment, user);
-            return comment;
+           // Comment comment = commentMapper.fromDto(commentId, commentDto);
+            commentService.update(commentId, commentDto.getContent(), user);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (AuthorizationException e) {

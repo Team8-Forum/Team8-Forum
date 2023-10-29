@@ -1,6 +1,7 @@
 package com.example.team8forum.services;
 
 import com.example.team8forum.exceptions.AuthorizationException;
+import com.example.team8forum.exceptions.EntityNotFoundException;
 import com.example.team8forum.models.Comment;
 
 import com.example.team8forum.models.Post;
@@ -40,9 +41,9 @@ public class CommentServiceImpl implements CommentService {
 
 
     @Override
-    public Comment create(Comment comment, User user) {
+    public Comment create(Comment comment, User user, Post post) {
         validateUserIsBlocked(user);
-        Post post = comment.getPost();
+       //Post post = comment.getPost();
         comment.setPost(post);
         comment.setComment(comment.getComment());
         comment.setCreatedBy(user);
@@ -52,7 +53,12 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void update(Comment comment, User user) {
+    public void update(int id, String content, User user) {
+        Comment comment = commentRepository.findCommentById(id);
+        if (comment == null){
+            throw new EntityNotFoundException("Comment", "id", String.valueOf(id));
+        }
+        comment.setComment(content);
         validateUserIsAdminOrCommentCreator(user, comment);
         validateUserIsBlocked(user);
         commentRepository.update(comment);

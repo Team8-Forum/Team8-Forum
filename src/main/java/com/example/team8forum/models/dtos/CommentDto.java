@@ -7,12 +7,12 @@ import jakarta.validation.constraints.Size;
 import java.time.LocalDateTime;
 
 public class CommentDto {
-        @NotNull
-        private int postId;
+      //  @NotNull
+      //  private int postId;
         @NotBlank(message = "You may not leave a blank comment.")
         private String content;
-        @NotBlank
-        private String username;
+      //  @NotBlank
+      //  private String username;
 
         public CommentDto() {
         }
@@ -24,12 +24,12 @@ public class CommentDto {
             this.content = content;
         }
 
-        public int getPostId() { return postId; }
+      //  public int getPostId() { return postId; }
 
-        public void setPostId(int postId) { this.postId = postId; }
+    //    public void setPostId(int postId) { this.postId = postId; }
 
-        public String getUsername() { return username; }
+     //   public String getUsername() { return username; }
 
-        public void setUsername(String userName) { this.username = userName; }
+     //   public void setUsername(String userName) { this.username = userName; }
 }
 

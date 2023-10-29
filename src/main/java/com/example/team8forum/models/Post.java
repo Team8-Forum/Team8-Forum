@@ -1,5 +1,6 @@
 package com.example.team8forum.models;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import jakarta.persistence.*;
@@ -31,6 +32,7 @@ public class Post {
 
     @OneToMany(fetch = FetchType.EAGER)
     @JoinColumn(name = "post_id")
+    @JsonBackReference
     private List<Comment> comments;
 
     @Column(name = "creation_date", nullable = false)
