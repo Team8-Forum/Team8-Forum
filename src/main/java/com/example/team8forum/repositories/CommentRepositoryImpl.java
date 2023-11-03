@@ -2,6 +2,7 @@ package com.example.team8forum.repositories;
 
 import com.example.team8forum.exceptions.EntityNotFoundException;
 import com.example.team8forum.models.Comment;
+import com.example.team8forum.models.Post;
 import com.example.team8forum.repositories.contracts.CommentRepository;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -23,6 +24,21 @@ public class CommentRepositoryImpl implements CommentRepository {
         this.sessionFactory = sessionFactory;
     }
 
+
+    @Override
+    public Comment get(String comment) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Comment> query = session.createQuery("from Comment where comment = :comment", Comment.class);
+            query.setParameter("comment", comment);
+
+            List<Comment> result = query.list();
+            if (result.isEmpty()) {
+                throw new EntityNotFoundException("Comment", "comment", comment);
+            }
+
+            return result.get(0);
+        }
+    }
     @Override
     public Set<Comment> findCommentsByPostId(int postId) {
         try (Session session = sessionFactory.openSession()) {

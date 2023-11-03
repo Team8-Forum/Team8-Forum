@@ -80,8 +80,6 @@ public class Helpers {
     public static CommentDto createCommentDto() {
         CommentDto dto = new CommentDto();
         dto.setContent("Mock content");
-        dto.setUsername(createMockUser().getUsername());
-        dto.setPostId(createMockPost().getId());
         return dto;
     }
 

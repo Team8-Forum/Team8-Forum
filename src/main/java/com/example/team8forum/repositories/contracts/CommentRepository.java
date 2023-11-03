@@ -7,7 +7,7 @@ import java.util.Set;
 
 public interface CommentRepository {
 
-
+    Comment get(String comment);
     Set<Comment> findCommentsByPostId(int postId);
 
     Comment findCommentById(int id);
