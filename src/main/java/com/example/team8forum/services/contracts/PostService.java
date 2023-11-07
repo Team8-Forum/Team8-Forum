@@ -15,7 +15,7 @@ public interface PostService {
 
     List<Post> getTenMostRecent();
 
-    void create(Post beer, User user);
+    void create(Post post, User user);
 
     Post likePost(User user, int postId);
 
