@@ -4,6 +4,8 @@ import com.example.team8forum.models.User;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
+import java.util.Set;
+
 public class PostDto {
     @NotNull(message = "The post must have a title.")
     @Size(min = 16, max = 64, message = "The title must be between 16 and 64 symbols")
@@ -12,6 +14,8 @@ public class PostDto {
     @NotNull(message = "The post must have a content.")
     @Size(min = 4, max = 8192, message = "The content must be between 32 symbols and 8192 symbols.")
     private String content;
+
+    private Set<CommentDto> comments;
 
     public PostDto() {
     }
@@ -31,4 +35,8 @@ public class PostDto {
     public void setContent(String content) {
         this.content = content;
     }
+
+    public Set<CommentDto> getComments() { return comments; }
+
+    public void setComments(Set<CommentDto> comments) { this.comments = comments; }
 }

@@ -3,10 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <title>Post</title>
+    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
-<h1 th:text="${post.getCreationDate()} " />
-<h2 th:text="${post.getCreatedBy().getUsername()}" />
-<h3 th:text="${post.getContent()}" />
+<h1 th:text="${post.getCreationDate()}"></h1>
+<h2 th:text="${post.getCreatedBy().getUsername()}"></h2>
+<h3 th:text="${post.getContent()}"></h3>
+<div>
+    <h4>Comments:</h4>
+    <div th:each="comment: ${post.getComments()}" class="comment">
+        <p><b>Name: <strong th:text="${comment.getCreatedBy().getUsername()}"></strong></b></p>
+        <p th:text="${comment.getComment()}"></p>
+    </div>
+</div>
 </body>
 </html>

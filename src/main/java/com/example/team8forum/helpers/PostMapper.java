@@ -22,6 +22,7 @@ public class PostMapper {
         post.setId(id);
         Post repositoryPost = postService.get(id);
         post.setCreatedBy(repositoryPost.getCreatedBy());
+        post.setComments(repositoryPost.getComments());
         return post;
     }
 
