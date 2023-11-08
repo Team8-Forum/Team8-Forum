@@ -1,6 +1,8 @@
 package com.example.team8forum.controllers.mvc;
 
+import com.example.team8forum.exceptions.AuthorizationException;
 import com.example.team8forum.exceptions.EntityNotFoundException;
+import com.example.team8forum.helpers.AuthenticationHelper;
 import com.example.team8forum.helpers.PostMapper;
 import com.example.team8forum.models.FilterOptions;
 import com.example.team8forum.models.Post;
@@ -8,8 +10,8 @@ import com.example.team8forum.models.User;
 import com.example.team8forum.models.dtos.PostDto;
 import com.example.team8forum.services.contracts.PostService;
 import com.example.team8forum.services.contracts.UserService;
-import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,12 +28,17 @@ public class PostController {
     private final PostService postService;
     private final PostMapper postMapper;
     private final UserService userService;
+    private final AuthenticationHelper authenticationHelper;
 
     @Autowired
-    public PostController(PostService postService, PostMapper postMapper, UserService userService) {
+    public PostController(PostService postService,
+                          PostMapper postMapper,
+                          UserService userService,
+                          AuthenticationHelper authenticationHelper) {
         this.postService = postService;
         this.postMapper = postMapper;
         this.userService = userService;
+        this.authenticationHelper = authenticationHelper;
     }
 
     @ModelAttribute("requestURI")
@@ -63,20 +70,24 @@ public class PostController {
     }
 
     @GetMapping("/create")
-    public String createPostForm(Model model) {
+    public String createPostForm(Model model, HttpSession httpSession) {
+        try {
+            authenticationHelper.tryGetCurrentUser(httpSession);
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
+        }
         model.addAttribute("post", new PostDto());
         return "PostCreateView";
     }
 
     @PostMapping("/create")
     public String createPost(@Valid @ModelAttribute("post") PostDto postDto,
-                             BindingResult result, Model model) {
+                             BindingResult result, Model model, HttpSession httpSession) {
         if (result.hasErrors()) {
             return "PostCreateView";
         }
         try {
-            //TODO Get authenticated user from HTTP session
-            User user = userService.getById(1);
+            User user = authenticationHelper.tryGetCurrentUser(httpSession);
             Post post = postMapper.fromDto(postDto);
             postService.create(post, user);
             return "redirect:/posts";
@@ -84,12 +95,15 @@ public class PostController {
             model.addAttribute("error", e.getMessage());
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             return "ErrorView";
+        } catch (AuthorizationException e){
+            return "redirect:/auth/login";
         }
     }
 
     @GetMapping("/{id}/update")
-    public String updatePostForm(@PathVariable int id, Model model){
+    public String updatePostForm(@PathVariable int id, Model model, HttpSession httpSession){
         try {
+            authenticationHelper.tryGetCurrentUser(httpSession);
             Post post = postService.get(id);
             PostDto postDto = postMapper.toDto(post);
             model.addAttribute("post", postDto);
@@ -98,20 +112,23 @@ public class PostController {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
             return "ErrorView";
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
         }
     }
 
     @PostMapping("/{id}/update")
     public String updatePost(@PathVariable int id,
                              @Valid @ModelAttribute("post") PostDto postDto,
-                             BindingResult result,  Model model){
+                             BindingResult result,
+                             Model model,
+                             HttpSession httpSession){
         if (result.hasErrors()) {
             return "PostUpdateView";
         }
 
         try {
-            //TODO Get authenticated user
-            User user = userService.getById(1);
+            User user = authenticationHelper.tryGetCurrentUser(httpSession);
             Post post = postMapper.fromDto(id, postDto);
             postService.update(post, user);
             return "redirect:/posts/{id}/update";
@@ -119,20 +136,23 @@ public class PostController {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
             return "ErrorView";
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
         }
     }
 
     @GetMapping("/{id}/delete")
-    public String deletePost(@PathVariable int id, Model model) {
+    public String deletePost(@PathVariable int id, Model model, HttpSession httpSession) {
         try {
-            //TODO Get authenticated user
-            User user = userService.getById(1);
+            User user = authenticationHelper.tryGetCurrentUser(httpSession);
             postService.delete(id, user);
             return "redirect:/posts";
         } catch (EntityNotFoundException e) {
             model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
             model.addAttribute("error", e.getMessage());
             return "ErrorView";
+        } catch (AuthorizationException e) {
+            return "redirect:/auth/login";
         }
     }
 

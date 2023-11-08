@@ -49,7 +49,13 @@ public class AuthenticationController {
             bindingResult.rejectValue("username", "auth_error", e.getMessage());
             return "LoginView";
         }
-
     }
+    @GetMapping("/logout")
+    public String handleLogout(HttpSession session) {
+        session.removeAttribute("currentUser");
+        return "redirect:/";
+    }
+
+
 
 }
