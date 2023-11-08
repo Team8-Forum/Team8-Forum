@@ -1,10 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Post</title>
-    <link rel="stylesheet" type="text/css" href="styles.css">
-</head>
+<div th:replace="~{PostForm.html::head(${post.title})}"></div>
 <body>
 <h1 th:text="${post.getCreationDate()}"></h1>
 <h2 th:text="${post.getCreatedBy().getUsername()}"></h2>

@@ -32,4 +32,12 @@ public class PostMapper {
         post.setContent(dto.getContent());
         return post;
     }
+
+    public PostDto toDto(Post post) {
+        PostDto dto = new PostDto();
+        dto.setTitle(post.getTitle());
+        dto.setContent(post.getContent());
+       // dto.setComments(post.getComments());
+        return dto;
+    }
 }

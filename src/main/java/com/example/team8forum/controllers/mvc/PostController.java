@@ -8,6 +8,8 @@ import com.example.team8forum.models.User;
 import com.example.team8forum.models.dtos.PostDto;
 import com.example.team8forum.services.contracts.PostService;
 import com.example.team8forum.services.contracts.UserService;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -30,6 +32,11 @@ public class PostController {
         this.postService = postService;
         this.postMapper = postMapper;
         this.userService = userService;
+    }
+
+    @ModelAttribute("requestURI")
+    public String getRequestURI(HttpServletRequest request) {
+        return request.getRequestURI();
     }
 
     @GetMapping
@@ -63,8 +70,7 @@ public class PostController {
 
     @PostMapping("/create")
     public String createPost(@Valid @ModelAttribute("post") PostDto postDto,
-                             Model model,
-                             BindingResult result) {
+                             BindingResult result, Model model) {
         if (result.hasErrors()) {
             return "PostCreateView";
         }
@@ -80,6 +86,56 @@ public class PostController {
             return "ErrorView";
         }
     }
+
+    @GetMapping("/{id}/update")
+    public String updatePostForm(@PathVariable int id, Model model){
+        try {
+            Post post = postService.get(id);
+            PostDto postDto = postMapper.toDto(post);
+            model.addAttribute("post", postDto);
+            return "PostUpdateView";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "ErrorView";
+        }
+    }
+
+    @PostMapping("/{id}/update")
+    public String updatePost(@PathVariable int id,
+                             @Valid @ModelAttribute("post") PostDto postDto,
+                             BindingResult result,  Model model){
+        if (result.hasErrors()) {
+            return "PostUpdateView";
+        }
+
+        try {
+            //TODO Get authenticated user
+            User user = userService.getById(1);
+            Post post = postMapper.fromDto(id, postDto);
+            postService.update(post, user);
+            return "redirect:/posts/{id}/update";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "ErrorView";
+        }
+    }
+
+    @GetMapping("/{id}/delete")
+    public String deletePost(@PathVariable int id, Model model) {
+        try {
+            //TODO Get authenticated user
+            User user = userService.getById(1);
+            postService.delete(id, user);
+            return "redirect:/posts";
+        } catch (EntityNotFoundException e) {
+            model.addAttribute("statusCode", HttpStatus.NOT_FOUND.getReasonPhrase());
+            model.addAttribute("error", e.getMessage());
+            return "ErrorView";
+        }
+    }
+
 
 
 }
