@@ -1,10 +1,15 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Team8</title>
-</head>
+<form th:replace="~{PostForm.html :: head('Home')}"></form>
 <body>
-Forum Team 8
+<form th:replace="~{PostForm.html :: header}"></form>
+
+<div class="body-content">
+    <h2 th:text="#{home.welcome}">Welcome (design)!</h2>
+    <h2 th:text="${session.currentUser}" th:if="${isAuthenticated}"></h2>
+    <img src="../static/images/img.png" th:src="@{/images/img.png}" alt="Our logo"/>
+    <p>Keep gaming!</p>
+</div>
+
 </body>
 </html>
