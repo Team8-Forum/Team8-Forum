@@ -6,10 +6,6 @@
     <link href="../static/css/styles.css" th:href="@{/css/styles.css}" rel="stylesheet"/>
 </head>
 
-<footer th:fragment="footer">
-    <p>Copyright (c) 2023 Gaming Forum</p>
-</footer>
-
 <header th:fragment="header">
     <div>
         <h3>
@@ -44,3 +40,8 @@
     </form>
 
 </div>
+
+
+<footer th:fragment="footer">
+    <small th:text="${'© Copyright ' + #dates.year(#dates.createNow()) + ' Gaming Forum'}">GamingForum</small>
+</footer>
