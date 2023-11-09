@@ -1,4 +1,4 @@
-package com.example.team8forum.controllers;
+package com.example.team8forum.controllers.rest;
 
 import com.example.team8forum.exceptions.AuthorizationException;
 import com.example.team8forum.exceptions.EntityDuplicateException;

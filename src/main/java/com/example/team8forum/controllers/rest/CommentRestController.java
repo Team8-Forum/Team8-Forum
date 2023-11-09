@@ -1,4 +1,4 @@
-package com.example.team8forum.controllers;
+package com.example.team8forum.controllers.rest;
 
 import com.example.team8forum.exceptions.AuthorizationException;
 import com.example.team8forum.exceptions.EntityDuplicateException;
@@ -35,7 +35,9 @@ public class CommentRestController {
     private final AuthenticationHelper authenticationHelper;
 
     @Autowired
-    public CommentRestController(CommentService commentService, PostService postService, CommentMapper commentMapper,
+    public CommentRestController(CommentService commentService,
+                                 PostService postService,
+                                 CommentMapper commentMapper,
                                  AuthenticationHelper authenticationHelper) {
         this.commentService = commentService;
         this.postService = postService;

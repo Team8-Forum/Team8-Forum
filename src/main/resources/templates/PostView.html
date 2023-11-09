@@ -2,9 +2,18 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <div th:replace="~{PostForm.html::head(${post.title})}"></div>
 <body>
+<form th:replace="~{PostForm.html :: header}"></form>
+
+<div class="container">
+    <div class="row">
+
 <h1 th:text="${post.getCreationDate()}"></h1>
 <h2 th:text="${post.getCreatedBy().getUsername()}"></h2>
 <h3 th:text="${post.getContent()}"></h3>
+    </div>
+</div>
+
+
 <div>
     <h4>Comments:</h4>
     <div th:each="comment: ${post.getComments()}" class="comment">
