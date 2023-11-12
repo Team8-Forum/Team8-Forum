@@ -45,6 +45,9 @@ public class User {
     @Column(name = "is_blocked", columnDefinition = "boolean default false")
     private boolean isBlocked;
 
+    @Column(name = "is_deleted", columnDefinition = "boolean default false")
+    private boolean isDeleted;
+
     public User(){
     }
 
@@ -127,6 +130,14 @@ public class User {
 
     public void setPhoneNumber(PhoneNumber phone) {
         this.phoneNumber = phone;
+    }
+
+    public boolean isDeleted() {
+        return isDeleted;
+    }
+
+    public void setDeleted(boolean deleted) {
+        isDeleted = deleted;
     }
 
     @Override

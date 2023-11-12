@@ -1,28 +1,42 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<form th:replace="~{PostForm.html :: head('Login')}"></form>
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
+</head>
 <body>
-<form th:replace="~{PostForm.html :: header}"></form>
-
-<div class="body-content">
-    <h2>Login</h2>
-    <form action="#" th:action="@{/auth/login}" th:object="${login}" method="post">
-        <label th:text="#{user.label.username}">Username</label>
-        <br/>
-        <input type="text" th:field="*{username}"/>
-        <label class="error" th:errors="*{username}">Username error placeholder</label>
-        <br/><br/>
-
-        <label th:text="#{user.label.password}">Password</label>
-        <br/>
-        <input type="password" th:field="*{password}"/>
-        <label class="error" th:errors="*{password}">Password error placeholder</label>
-        <br/><br/>
-
-        <input type="submit" value="Login"/>
-    </form>
+<div th:replace="HomeView.html :: navigation"></div>
+<div class="login_container ">
+    <h1 class="main_title">Welcome</h1>
+    <div class="login_container--flex">
+        <div class="main_container--right">
+            <div class="loginForm_container">
+                <form id="login_form" action="#" th:action="@{/auth/login}" th:object="${login}" method="post">
+                    <div>
+                        <div class="form_row">
+                            <label class="user_form_data">Username:</label>
+                            <input  type="text" placeholder="e.g. dberbatov9" th:field="*{username}" name="username">
+                        </div>
+                        <div class="form_row">
+                            <label class="user_form_data">Password:</label>
+                            <input type="password" placeholder="Enter your password" th:field="*{password}" name="password">
+                        </div>
+                        <label class="error" th:errors="*{username}">Username error placeholder</label>
+                        <label class="error" th:errors="*{password}">Password error placeholder</label>
+                    </div>
+                    <button onclick="login(event)" class="button--lightBlue loginForm_button" href="#">Login</button>
+                </form>
+                <div class="registerNewAccount_button_container">
+                    <p>Join us</p>
+                    <a href="#" th:href="@{/auth/register}">
+                        <button class="button--lightBlue">Register a new account</button>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-
-<form th:replace="~{PostForm.html :: footer}"></form>
+<script src="../static/profilePicture.js" th:src="@{/profilePicture.js}"></script>
 </body>
 </html>

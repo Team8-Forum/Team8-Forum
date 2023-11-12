@@ -8,6 +8,8 @@ import com.example.team8forum.models.User;
 import com.example.team8forum.models.dtos.LoginDto;
 import com.example.team8forum.models.dtos.RegisterUserDto;
 import com.example.team8forum.services.contracts.UserService;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,36 +24,42 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 @RequestMapping("/auth")
 public class AuthenticationController {
+    private final UserMapper userMapper;
     private final UserService userService;
     private final AuthenticationHelper authenticationHelper;
-    private final UserMapper userMapper;
 
     @Autowired
-    public AuthenticationController(UserService userService, AuthenticationHelper authenticationHelper, UserMapper userMapper) {
+    public AuthenticationController(UserMapper userMapper, UserService userService, AuthenticationHelper authenticationHelper) {
+        this.userMapper = userMapper;
         this.userService = userService;
         this.authenticationHelper = authenticationHelper;
-        this.userMapper = userMapper;
     }
 
-
     @GetMapping("/login")
-    public String showLogin(Model model) {
+    public String showLoginPage(Model model, HttpSession session) {
+        try {
+            authenticationHelper.tryGetCurrentUser(session);
+            return "redirect:/";
+        } catch (AuthorizationException e) {
+            //return "redirect:/auth/login";
+        }
         model.addAttribute("login", new LoginDto());
         return "LoginView";
     }
 
     @PostMapping("/login")
-    public String handleLogin(@Valid @ModelAttribute("login") LoginDto loginDto,
-                              BindingResult bindingResult,
-                              HttpSession httpSession) {
-        if(bindingResult.hasErrors()) {
+    public String handleLoginPage(@ModelAttribute("login") LoginDto loginUserDto, BindingResult bindingResult,
+                                  HttpSession session, HttpServletResponse response){
+        if(bindingResult.hasErrors()){
             return "LoginView";
         }
-        try {
 
-            User user = authenticationHelper.verifyAuthentication(loginDto.getUsername(),
-                    loginDto.getPassword());
-            httpSession.setAttribute("currentUsername", user.getUsername());
+        try {
+            authenticationHelper.verifyAuthentication(loginUserDto.getUsername(), loginUserDto.getPassword());
+            session.setAttribute("currentUser", loginUserDto.getUsername());
+            Cookie cookie = new Cookie("user", loginUserDto.getUsername());
+            cookie.setSecure(false);
+            response.addCookie(cookie);
             return "redirect:/";
         } catch (AuthorizationException e) {
             bindingResult.rejectValue("username", "auth_error", e.getMessage());
@@ -59,8 +67,9 @@ public class AuthenticationController {
         }
     }
     @GetMapping("/logout")
-    public String handleLogout(HttpSession session) {
+    public String handleLogout(HttpSession session, HttpServletResponse response) {
         session.removeAttribute("currentUser");
+        response.reset();
         return "redirect:/";
     }
 
@@ -71,27 +80,21 @@ public class AuthenticationController {
     }
 
     @PostMapping("/register")
-    public String handleRegister(@Valid @ModelAttribute("register") RegisterUserDto register,
-                                 BindingResult bindingResult) {
+    public String handleRegister(@Valid @ModelAttribute("register") RegisterUserDto registerUserDto,
+                                 BindingResult bindingResult,
+                                 HttpSession session) {
         if (bindingResult.hasErrors()) {
             return "RegisterView";
         }
 
-        if (!register.getPassword().equals(register.getPassword())) {
-            bindingResult.rejectValue("passwordConfirm", "password_error", "Password confirmation should match password.");
-            return "RegisterView";
-        }
-
         try {
-            User user = userMapper.fromDto(register);
+            User user = userMapper.registerDTOToObject(registerUserDto);
             userService.create(user);
             return "redirect:/auth/login";
         } catch (EntityDuplicateException e) {
+            System.out.println("error here");
             bindingResult.rejectValue("username", "username_error", e.getMessage());
             return "RegisterView";
         }
     }
-
-
-
 }

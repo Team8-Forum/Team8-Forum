@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Repository
 public class UserRepositoryImpl implements UserRepository {
@@ -23,6 +24,14 @@ public class UserRepositoryImpl implements UserRepository {
     @Autowired
     public UserRepositoryImpl(SessionFactory sessionFactory){
         this.sessionFactory = sessionFactory;
+    }
+
+    @Override
+    public List<User> getAll() {
+        try (Session session = sessionFactory.openSession()) {
+            Query<User> query = session.createQuery("from User", User.class);
+            return query.list();
+        }
     }
     @Override
     public List<User> getAll(UserFilterOptions filterOptions) {

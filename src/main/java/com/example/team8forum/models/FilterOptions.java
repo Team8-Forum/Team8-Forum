@@ -15,6 +15,10 @@ public class FilterOptions {
 
     private Optional<String> sortOrder;
 
+    public FilterOptions() {
+        this(null, null, null, null, null, null);
+    }
+
     public FilterOptions(
             String title,
             Integer minLikes,

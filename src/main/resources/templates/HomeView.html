@@ -1,15 +1,121 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<div th:replace="~{PostForm.html :: head('Home')}"></div>
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+    <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
+    <link href='http://fonts.googleapis.com/css?family=Lato:400,700' rel='stylesheet' type='text/css'>
+</head>
 <body>
-<form th:replace="~{PostForm.html :: header}"></form>
-
-<div class="body-content">
-    <h2 th:text="#{home.welcome}">Welcome (design)!</h2>
-    <h2 th:text="${session.currentUser}" th:if="${isAuthenticated}"></h2>
-    <img src="../static/images/img.png" th:src="@{/images/img.png}" alt="Our logo"/>
-    <p>Keep gaming!</p>
+<div th:if="${isAuthenticated}" th:fragment="navigation" class="navigation_container">
+    <div class="navigation_container--left">
+        <a href="#" class="login_button" th:href="@{/}">Home</a>
+        <span class="logo_text">   Gaming Forum</span>
+    </div>
+    <div class="navigation_container--right">
+        <a th:unless="${isAuthenticated}" class="login_button" href="#" th:href="@{/auth/login}" >login</a>
+        <div th:if="${isAuthenticated}" class="userImg_navigationBar">
+            <img src="#"  id="profilePictureSwitch" class="navigationProfile_img image--rounded" th:src="@{/images/user.png}" alt="profilePicture">
+            <div id="loggedUser_dropDown" class="userOptions_navigationBar hide">
+                <a class="myProfile_button" href="#" th:href="@{/users/{id}(id=${getUserId})}">My profile </a>
+                <a class="logout_button" href="#" th:href="@{/auth/logout}" >logout</a>
+            </div>
+        </div>
+    </div>
 </div>
-<form th:replace="~{PostForm.html :: footer}"></form>
+<div th:unless="${isAuthenticated}" th:fragment="navigation" class="navigation_container">
+    <div class="navigation_container--left">
+        <a href="#" class="login_button" th:href="@{/}">Home</a>
+        <span class="logo_text">   Gaming Forum</span>
+    </div>
+
+    <div class="navigation_container--right">
+        <a th:unless="${isAuthenticated}" class="login_button" href="#" th:href="@{/auth/login}" >login</a>
+    </div>
+</div>
+
+<div class="main_container container--flex">
+    <div class="main_container--left">
+        <div class="categoryContainer_footer">
+            <a class="list_link" href="#" th:href="@{/users}">
+                Active users:
+                <span th:text="${usersSize}">0</span>
+            </a>
+
+            <a class="list_link" href="#"
+               th:href="@{/posts}">
+                All posts:
+                <span th:text="${postsSize}">0</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="main_container--right">
+        <div class="aagePostsContainer_Title">
+            <h2>Posts</h2>
+            <select class="button--lightOrange" name="" id="homePosts_switch">
+                <option value="most-recent">10 Most Recent</option>
+                <option value="most-commented">10 Most Commented</option>
+            </select>
+        </div>
+        <div th:if="${posts.isEmpty()}">
+            <h4>No posts yet...</h4>
+        </div>
+        <div th:unless="${posts.isEmpty()}" class="postListing_container">
+            <div id="mostCommented_posts" class="hide">
+                <div th:each="post: ${mostCommentedPosts}" class="postListing_child">
+                    <div class="postListing_child--left">
+                        <a href="#" th:href="@{/posts/{id}(id=${post.getId()})}">
+                            <h3 th:text="${post.getTitle()}">title</h3>
+                        </a>
+                        <div class="postListing_info">
+                            <a href="#" th:href="@{/users/{id}(id=${post.getCreatedBy().getId})}">
+                                <p class="post_author" th:text="${post.getCreatedBy().getUsername()}">username</p>
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="postListing_child--right">
+                        <div class="count_container">
+                            <img class="count_icon" src="../static/images/comment.png" th:src="@{/images/comment.png}"
+                                 alt="">
+                            <span class="count" th:text="${post.getComments().size()}"></span>
+                        </div>
+                        <div class="count_container">
+                            <img class="count_icon" src="../static/images/like.png" th:src="@{/images/like.png}" alt="">
+                            <span class="count" th:text="${post.getLikes().size()}"></span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div th:each="post: ${mostRecentPosts}" class="postListing_child">
+                <div class="postListing_child--left">
+                    <a href="#" th:href="@{/posts/{id}(id=${post.getId})}">
+                        <h3 th:text="${post.getTitle()}">title</h3>
+                    </a>
+                    <div class="postListing_info">
+                        <a href="#" th:href="@{/users/{id}(id=${post.getCreatedBy().getId})}">
+                            <p class="post_author" th:text="${post.getCreatedBy().getUsername()}">username</p>
+                        </a>
+                    </div>
+                </div>
+                <div class="postListing_child--right">
+                    <div class="count_container">
+                        <img class="count_icon" src="../static/images/comment.png" th:src="@{/images/comment.png}"
+                             alt="">
+                        <span class="count" th:text="${post.getComments().size()}"></span>
+                    </div>
+                    <div class="count_container">
+                        <img class="count_icon" src="../static/images/like.png" th:src="@{/images/like.png}" alt="">
+                        <span class="count" th:text="${post.getLikes().size()}"></span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../static/profilePicture.js" th:src="@{/profilePicture.js}"></script>
+<script src="../static/HomeView.js" th:src="@{Homeview.js}"></script>
 </body>
 </html>

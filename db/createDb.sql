@@ -7,8 +7,9 @@ create table users
     username   varchar(60)          not null,
     password   varchar(50)          not null,
     email      varchar(70)          not null,
-    is_admin   tinyint(1)           not null,
+    is_admin   tinyint(1) default 0 not null,
     is_blocked tinyint(1) default 0 not null,
+    is_deleted tinyint(1) default 0 null,
     constraint users_pk2
         unique (email),
     constraint users_pk3

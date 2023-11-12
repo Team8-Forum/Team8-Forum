@@ -1,17 +1,109 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<div th:replace="~{PostForm.html::head('All Posts')}"></div>
+<head>
+    <meta charset="UTF-8">
+    <title>All posts</title>
+    <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
+</head>
 <body>
-<div th:replace="~{PostForm.html :: header}"></div>
-<h1>All Posts</h1>
-<div class = "table">
-    <div class="row" th:each="post:${posts}">
-        <div class="cell" >
-             <a th:text="${post.getTitle()}" th:href="@{/posts/{id}(id=${post.getId()})}" />
+<div th:replace="HomeView.html :: navigation"></div>
+<div class="main_container">
+    <div th:fragment="toolbar" class="toolbar_container">
+        <div class="toolbarChild_container">
+            <button th:if="${isAuthenticated}" id="show_form" class="button--orange">Create New Post</button>
+            <a th:unless="${isAuthenticated}" class="button--orange" href="#" th:href="@{/auth/login}">Create New Post</a>
+        </div>
+
+        <div class="toolbarChild_container">
+            <a class="button--orange" href="#" th:href="@{/posts}">
+                all posts
+            </a>
+        </div>
+    </div>
+
+    <div class="table">
+        <div id="first" class="row">
+            <form id="filter_form" class="firstRowInner_container" action="#" th:action="@{/posts}" th:object="${filterPostDto}" method="get">
+                <div>
+                    <span class="selectSort_label">Sort By:</span>
+                    <select th:field="*{sortBy}" class="button--orange toolbar_button" name="" id="sort">
+                        <option value="">Sort By</option>
+                        <option value="title">Title</option>
+                        <option value="creationDate">CreationDate</option>
+                    </select>
+                    <select th:field="*{sortOrder}" class="button--orange toolbar_button" name="">
+                        <option value="">Sort Order</option>
+                        <option value="asc">Ascending</option>
+                        <option value="desc">Descending</option>
+                    </select>
+                    <span class="selectSort_label">Filter By:</span>
+                    <input id="title" class="filter_input" type="text" placeholder="Post Title" th:field="*{title}"/>
+                    <button class="button--orange toolbar_button">Apply</button>
+                </div>
+            </form>
+        </div>
+        <div class="row" th:unless="${posts.isEmpty()}">
+            <div class="rowChild_container">
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell"></div>
+                <div class="cell">
+                    <span class="creationDate_label">Creation date</span>
+                </div>
+            </div>
+        </div>
+        <div th:if="${posts.isEmpty()}">
+            <h4>No posts yet...</h4>
+        </div>
+        <div class="row" th:unless="${posts.isEmpty()}"
+             th:each="post: ${posts}">
+            <div class="rowChild_container">
+                <div class="postRow_info">
+                    <a href="#" th:href="@{/posts/{id}(id=${post.getId()})}">
+                        <h3 th:text="${post.getTitle()}">title</h3>
+                    </a>
+                    <a href="#" th:href="@{/users/{id}(id=${post.getCreatedBy().getId()})}">
+                        Author:
+                        <span class="post_author" th:text="${post.getCreatedBy().getUsername()}">username</span>
+                    </a>
+                </div>
+            </div>
+            <div class="rowChild_container">
+                <img class="row_icon"  src="../static/images/comment.png" th:src="@{/images/comment.png}"
+                     alt="">
+                <span class="cell" th:text="${post.getComments().size()}">0</span>
+                <img class="row_icon" src="../static/images/like.png" th:src="@{/images/like.png}" alt="">
+                <span class="cell" th:text="${post.getLikes().size()}">0</span>
+                <span class="cell" th:text="${post.getCreationDate()}"></span>
+            </div>
+        </div>
     </div>
 </div>
 
+<div th:fragment="popupCreation_form" class="popup_wrapper hide">
+    <div id="creationForm_background" class="popup_background"></div>
+    <div class="createPostForm_container">
+        <span id="createPost_close_btn" class="close_btn">X</span>
+        <h2>Create New Post</h2>
+        <form id="createPost_form" action="#" th:action="@{/posts}"
+              th:object="${newPost}" method="post">
+            <div class="form_row">
+                <label for="title">Title</label>
+                <input type="text" placeholder="e.g. I can’t find IT job" name="title" th:field="*{title}">
+                <label class="error hide" id="titleError_label" >Title must be between 16 and 64 symbols</label>
+            </div>
 
-    <form th:replace="~{PostForm.html :: footer}"></form>
+            <div class="form_row">
+                <label>Content</label>
+                <textarea name="content" th:field="*{content}"></textarea>
+                <label class="error hide" id="contentError_label" >Content must be between 32 and 8192 symbols</label>
+            </div>
+            <input class="button--lightOrange" type="submit" value="Save" id="createPost_btn">
+        </form>
+    </div>
+</div>
+<script src="../static/posts.js" th:src="@{/posts.js}"></script>
+<script src="../static/profilePicture.js" th:src="@{/profilePicture.js}"></script>
 </body>
 </html>

@@ -7,6 +7,9 @@ import com.example.team8forum.models.User;
 import java.util.List;
 
 public interface PostService {
+
+    List<Post> getAll();
+
     List<Post> get(FilterOptions filterOptions);
 
     Post get(int id);

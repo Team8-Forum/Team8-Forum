@@ -1,11 +1,16 @@
 package com.example.team8forum.helpers;
 
 import com.example.team8forum.models.Post;
+import com.example.team8forum.models.User;
+import com.example.team8forum.models.dtos.PostCreateDto;
 import com.example.team8forum.models.dtos.PostDto;
 import com.example.team8forum.services.contracts.PostService;
 import com.example.team8forum.services.contracts.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import java.util.ArrayList;
+import java.util.HashSet;
 
 @Component
 public class PostMapper {
@@ -18,12 +23,10 @@ public class PostMapper {
     }
 
     public Post fromDto(int id, PostDto dto) {
-        Post post = fromDto(dto);
-        post.setId(id);
-        Post repositoryPost = postService.get(id);
-        post.setCreatedBy(repositoryPost.getCreatedBy());
-        post.setComments(repositoryPost.getComments());
-        return post;
+        Post postToBeUpdated = postService.get(id);
+        postToBeUpdated.setTitle(dto.getTitle());
+        postToBeUpdated.setContent(dto.getContent());
+        return postToBeUpdated;
     }
 
     public Post fromDto(PostDto dto) {
@@ -39,5 +42,15 @@ public class PostMapper {
         dto.setContent(post.getContent());
        // dto.setComments(post.getComments());
         return dto;
+    }
+
+    public Post mvcDtoToObject(PostCreateDto postCreateDto, User user) {
+            Post post = new Post();
+            post.setTitle(postCreateDto.getTitle());
+            post.setContent(postCreateDto.getContent());
+            post.setCreatedBy(user);
+            post.setLikes(new HashSet<>());
+            post.setComments(new HashSet<>());
+            return post;
     }
 }

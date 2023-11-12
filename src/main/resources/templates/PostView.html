@@ -1,31 +1,104 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <div th:replace="~{PostForm.html::head(${post.title})}"></div>
+    <meta charset="UTF-8">
+    <title th:text="${post.getTitle()}">Post Title</title>
+    <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
 </head>
 <body>
-<div th:replace="~{PostForm.html :: header}"></div>
+<div th:replace="~{HomeView.html :: navigation}"></div>
+<div class="main_container">
+    <div th:replace="~{PostsView.html :: toolbar}"></div>
+    <div class="postOuter_container">
+        <div class="content_container">
+            <div class="post_main_container">
+                <div class="post_main--left" >
+                    <div class="postCount_container" th:if="${post.getLikes().contains(user)}">
+                        <form action="#" th:action="@{/posts/{postId}/likes(postId=${post.getId()})}" method="post">
+                            <button>
+                                <img class="like_icon postLike_icon 1" src="../static/images/fullLike.png" th:src="@{/images/fullLike.png}" alt="full Like button">
+                            </button>
+                        </form>
+                    </div>
+                    <div th:unless="${post.getLikes().contains(user)}" class="postCount_container">
+                        <form action="#" th:action="@{/posts/{postId}/likes(postId=${post.getId()})}" method="post">
+                            <button th:if="${isAuthenticated}">
+                                <img  id="postLike_icon" class="like_icon postLike_icon 2" src="../static/images/like.png" th:src="@{/images/like.png}" alt="Like button photo">
+                            </button>
+                            <button th:unless="${isAuthenticated}" >
+                                <img class="like_icon postLike_icon cursor--forbidden" alt="Like button photo"
+                                     src="../static/images/like.png" th:src="@{/images/like.png}">
+                            </button>
+                        </form>
+                    </div>
+                    <p id="postVotes_count" th:text="${post.getLikes().size()}">0 </p>
+                </div>
+                <div class="post_main--right">
+                    <div class="post_info">
+                        <div class="author_info">
+                            <a href="#" th:href="@{/users/{id}(id=${post.getCreatedBy().getId()})}" class="post_author" th:text="${post.getCreatedBy().getUsername()}">Post author</a>
+                        </div>
+                        <span class="post_creationDate"
+                              th:text="${post.getCreationDate()}">Post creation date </span>
+                    </div>
+                    <h2 class="post_title" th:text="${post.getTitle()}"> Post title </h2>
+                    <p class="post_content" th:text="${post.getContent()}"> Post content</p>
 
-<div class="container">
-    <div class="row">
-        <h1 th:text="${post.getCreatedBy().getUsername()}"></h1>
-        <h2 th:text="${post.getCreationDate()}"></h2>
-        <h3 th:text="${post.getTitle()}"></h3>
-        <h4 th:text="${post.getContent()}"></h4>
-        <hr>
+                    <div th:if="${isOwnerOrAdmin}" class="post_controllers controllers">
+                        <a href="" th:href="@{/posts/{id}/update(id=${post.getId()})}">edit |</a>
+                        <a href=""
+                           th:href="@{/posts/{id}/delete(id=${post.getId()})}">
+                            delete |
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${comments.isEmpty()}">
+                <h4>No comments yet...</h4>
+            </div>
+            <div th:unless="${comments.isEmpty()}">
+                <h2 class="commentsContainer_title">All comments</h2>
+                <div th:each="comment: ${post.getComments()}" class="post_main_container">
+                    <div class="post_main--right">
+                        <div class="comment_info">
+                            <div class="author_info">
+                                <a href="#" th:href="@{/users/{id}(id=${comment.getCreatedBy().getId()})}" class="post_author" th:text="${comment.getCreatedBy().getUsername()}">
+                                    Comment author
+                                </a>
+                            </div>
+                        </div>
+                        <p class="comment_content" th:text="${comment.getComment()}"> Post content</p>
+                        <div class="post_controllers controllers">
+                            <a th:if="${isAuthenticated && user.isAdmin()}"  href="" th:href="@{/posts/{postId}/comments/{commentId}/update(postId=${post.getId()}, commentId=${comment.commentId})}">edit |</a>
+                            <a th:if="${isAuthenticated && user.isAdmin()}"  href=""
+                               th:href="@{/posts/{postId}/comments/{commentId}/delete(postId=${post.getId()}, commentId=${comment.commentId})}">
+                                delete |
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div th:if="${isAuthenticated}" class="commentCreation_container">
+                <form class="addComment_container" action="#" th:action="@{/posts/{postId}/comments(postId=${post.getId()})}"
+                      th:object="${newComment}" method="post">
+                    <div class="commentTextArea_container">
+                        <textarea class="comment_textarea" name="" id="comment_textarea" cols="30" rows="10" th:field="*{content}" placeholder="Write a comment..."></textarea>
+                        <div id="the-count">
+                            <span id="current">0</span>
+                            <span id="maximum">/ 8192</span>
+                        </div>
+                    </div>
+                    <label class="error" th:errors="*{content}">Content must be between 32 and 8192 symbols</label>
+                    <input class="submit_button" type="submit" value="submit">
+                </form>
+            </div>
+        </div>
+        <div>
+        </div>
     </div>
 </div>
-
-<div>
-    <h4>Comments:</h4>
-    <div th:each="comment: ${post.getComments()}" class="comment">
-        <p><b>Name: <strong th:text="${comment.getCreatedBy().getUsername()}"></strong></b></p>
-        <p th:text="${comment.getComment()}"></p>
-        <br/>
-    </div>
-</div>
-
-<form th:replace="~{PostForm.html :: footer}"></form>
+<div th:replace="~{PostsView.html :: popupCreation_form}"></div>
+<script src="../static/posts.js" th:src="@{/posts.js}"></script>
+<script src="../static/profilePicture.js" th:src="@{/profilePicture.js}"></script>
 </body>
 </html>
-

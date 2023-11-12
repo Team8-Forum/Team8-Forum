@@ -1,52 +1,53 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<form th:replace="~{PostForm.html :: head('Register')}"></form>
-<body>
-<div th:replace="~{PostForm.html :: header}"></div>
-<div class="body-content">
-    <h2>Register</h2>
+<head>
+    <meta charset="UTF-8">
+    <title>Register</title>
+    <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
+</head>
+<body class="registerPage_body">
+<div th:replace="HomeView.html :: navigation"></div>
+<div class="login_container ">
+    <div class="register--outer">
+        <div class="registerForm_container">
+            <div class="registerForm_background"></div>
+            <div>
+                <h2 class="registerForm_title">Gaming Forum</h2>
+                <form id="register_form" action="#" th:action="@{/auth/register}" th:object="${register}" method="post">
+                    <div class="form_row">
+                        <label class="user_form_data">Username:</label>
+                        <input type="text" placeholder="Enter your username" name="username" th:field="*{username}">
+                        <label class="error" th:errors="*{username}">Username cannot be empty</label>
+                    </div>
+                    <div class="form_row">
+                        <label class="user_form_data">First name:</label>
+                        <input type="text" placeholder="Enter your first name" name="first_name" th:field="*{firstName}">
+                        <label class="error" th:errors="*{firstName}">First name must be between 4 and 20  symbols</label>
+                    </div>
+                    <div class="form_row">
+                        <label class="user_form_data">Last name:</label>
+                        <input type="text" placeholder="Enter your last name" name="password" th:field="*{lastName}">
+                        <label class="error" th:errors="*{lastName}">Last name must be between 4 and 20  symbols</label>
+                    </div>
+                    <div class="form_row">
+                        <label class="user_form_data">Email:</label>
+                        <input type="email" placeholder="Enter your email" name="email" th:field="*{email}">
+                        <label class="error" th:errors="*{email}">Email cannot be empty</label>
+                    </div>
+                    <div class="form_row">
+                        <label class="user_form_data">Password:</label>
+                        <input type="password" placeholder="Enter your password" name="password" th:field="*{password}">
+                        <label class="error" th:errors="*{password}">Password cannot be empty</label>
+                    </div>
+                    <div class="registerBorder--top">
+                        <p>Join us</p>
+                        <button type="submit" class="button--lightBlue" href="#">Start your journey!</button>
+                    </div>
 
-    <form action="#" th:action="@{/auth/register}" th:object="${register}" method="post">
-        <label th:text="#{user.label.username}">Username</label>
-        <br/>
-        <input type="text" th:field="*{username}"/>
-        <label class="error" th:errors="*{username}">Username error placeholder</label>
-        <br/><br/>
-
-        <label th:text="#{user.label.password}">Password</label>
-        <br/>
-        <input type="password" th:field="*{password}"/>
-        <label class="error" th:errors="*{password}">Password error placeholder</label>
-        <br/><br/>
-
-        <label th:text="#{user.label.password-confirm}">Confirm Password</label>
-        <br/>
-        <input type="password" th:field="*{password}"/>
-        <label class="error" th:errors="*{password}">Password confirm error placeholder</label>
-        <br/><br/>
-
-        <label th:text="#{user.label.first-name}">First Name</label>
-        <br/>
-        <input type="text" th:field="*{firstName}"/>
-        <label class="error" th:errors="*{firstName}">First name error placeholder</label>
-        <br/><br/>
-
-        <label th:text="#{user.label.last-name}">Last Name</label>
-        <br/>
-        <input type="text" th:field="*{lastName}"/>
-        <label class="error" th:errors="*{lastName}">Last name error placeholder</label>
-        <br/><br/>
-
-        <label th:text="#{user.label.email}">Email</label>
-        <br/>
-        <input type="text" th:field="*{email}"/>
-        <label class="error" th:errors="*{email}">Email error placeholder</label>
-        <br/><br/>
-
-        <input type="submit" value="Register"/>
-    </form>
+                </form>
+            </div>
+        </div>
+    </div>
 </div>
-
-<form th:replace="~{PostForm.html :: footer}"></form>
 </body>
 </html>

@@ -19,7 +19,6 @@ public class Post {
     @Column(name = "post_id")
     private int id;
 
-
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User createdBy;
@@ -30,10 +29,9 @@ public class Post {
     @Column(name = "content")
     private String content;
 
-    @OneToMany(fetch = FetchType.EAGER)
-    @JoinColumn(name = "post_id")
-    @JsonBackReference
-    private List<Comment> comments;
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @OneToMany(mappedBy = "post",fetch = FetchType.EAGER)
+    private Set<Comment> comments;
 
     @Column(name = "creation_date", nullable = false)
     @CreationTimestamp
@@ -49,15 +47,6 @@ public class Post {
     private Set<User> likes;
     public Post() {
     }
-
-    public Post(User createdBy, String title, String content) {
-        this.createdBy = createdBy;
-        this.title = title;
-        this.content = content;
-        this.comments = new ArrayList<>();
-        this.creationDate = new Date();
-    }
-
     public User getCreatedBy() {
         return createdBy;
     }
@@ -90,11 +79,11 @@ public class Post {
         this.id = id;
     }
 
-    public List<Comment> getComments() {
+    public Set<Comment> getComments() {
         return comments;
     }
 
-    public void setComments(List<Comment> comments) {
+    public void setComments(Set<Comment> comments) {
         this.comments = comments;
     }
 

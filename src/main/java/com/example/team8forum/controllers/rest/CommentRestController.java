@@ -62,8 +62,8 @@ public class CommentRestController {
     }
 
     @GetMapping("")
-    public Set<Comment> getCommentsByPostId(@RequestParam int postId) {
-        Set<Comment> comments = commentService.get(postId);
+    public List<Comment> getCommentsByPostId(@RequestParam int postId) {
+        List<Comment> comments = commentService.get(postId);
         return comments;
     }
 
@@ -72,8 +72,8 @@ public class CommentRestController {
             @RequestBody CommentDto commentDto) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
-           // Comment comment = commentMapper.fromDto(commentId, commentDto);
-            commentService.update(commentId, commentDto.getContent(), user);
+            Comment comment = commentMapper.fromDto(commentId, commentDto);
+            commentService.updateComment(comment, user);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (AuthorizationException e) {
@@ -85,7 +85,7 @@ public class CommentRestController {
     public void deleteComment(@RequestHeader HttpHeaders headers, @PathVariable int commentId) {
         try {
             User user = authenticationHelper.tryGetUser(headers);
-            commentService.delete(commentId,user);
+            commentService.deleteComment(commentId,user);
         } catch (EntityNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, e.getMessage());
         } catch (AuthorizationException e) {

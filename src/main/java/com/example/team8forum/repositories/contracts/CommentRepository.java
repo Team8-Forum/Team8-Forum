@@ -8,7 +8,7 @@ import java.util.Set;
 public interface CommentRepository {
 
     Comment get(String comment);
-    Set<Comment> findCommentsByPostId(int postId);
+    List<Comment> findCommentsByPostId(int postId);
 
     Comment findCommentById(int id);
 
@@ -16,6 +16,6 @@ public interface CommentRepository {
 
     void update(Comment comment);
 
-    void delete(int id);
+    void delete(Comment comment);
 
 }

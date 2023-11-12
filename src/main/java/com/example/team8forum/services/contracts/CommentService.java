@@ -13,15 +13,15 @@ import java.util.Set;
 
 public interface CommentService {
 
-    Set<Comment> get(int postId);
+    List<Comment> get(int postId);
 
     Comment getCommentById(int id);
 
     Comment create(Comment comment, User user, Post post);
 
-    void update(int id, String content, User user);
+    void updateComment(Comment comment, User user);
 
-    void delete(int id, User user);
+    void deleteComment(int commentId, User user);
 
 
 

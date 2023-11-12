@@ -9,6 +9,7 @@ public class ValidationHelpers {
 
     private static final String UNAUTHORIZED_POST_UPDATE = "Ony admin or post's creator can modify a post.";
     private static final String BLOCKED_USER_ERROR_MESSAGE = "Your account is currently blocked! You cannot create or edit posts.";
+    private static final String DELETE_USER_ERROR_MESSAGE = "Your account is currently deleted! You cannot create or edit posts.";
     private static final String MODIFY_USER_ERROR_MESSAGE = "Only admin or account's owners can modify a user";
 
     public static void validateUserIsAdmin(User user){
@@ -44,6 +45,12 @@ public class ValidationHelpers {
     public static void validateUserIsBlocked(User user) {
         if (user.isBlocked()) {
             throw new AuthorizationException(BLOCKED_USER_ERROR_MESSAGE);
+        }
+    }
+
+    public static void validateUserIsDeleted(User user) {
+        if (user.isDeleted()) {
+            throw new AuthorizationException(DELETE_USER_ERROR_MESSAGE);
         }
     }
 }

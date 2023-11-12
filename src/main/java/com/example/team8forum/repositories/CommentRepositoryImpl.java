@@ -40,12 +40,12 @@ public class CommentRepositoryImpl implements CommentRepository {
         }
     }
     @Override
-    public Set<Comment> findCommentsByPostId(int postId) {
+    public List<Comment> findCommentsByPostId(int postId) {
         try (Session session = sessionFactory.openSession()) {
-            String hql = "SELECT c FROM Comment c JOIN c.post p WHERE p.id= :postId";
-            Query<Comment> query = session.createQuery(hql, Comment.class);
+            Query<Comment> query = session.createQuery(
+                    "from Comment c where c.post.id = :postId", Comment.class);
             query.setParameter("postId", postId);
-            return new HashSet<>(query.getResultList());
+            return query.list();
         }
     }
 
@@ -80,11 +80,10 @@ public class CommentRepositoryImpl implements CommentRepository {
     }
 
     @Override
-    public void delete(int id) {
-        Comment commentToDelete = findCommentById(id);
-        try (Session session = sessionFactory.openSession()){
+    public void delete(Comment comment) {
+        try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            session.remove(commentToDelete);
+            session.remove(comment);
             session.getTransaction().commit();
         }
     }

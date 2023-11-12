@@ -2,6 +2,7 @@ package com.example.team8forum.helpers;
 
 import com.example.team8forum.exceptions.AuthorizationException;
 import com.example.team8forum.exceptions.EntityNotFoundException;
+import com.example.team8forum.models.Post;
 import com.example.team8forum.models.User;
 import com.example.team8forum.services.contracts.UserService;
 import jakarta.servlet.http.HttpSession;
@@ -46,13 +47,23 @@ public class AuthenticationHelper {
     }
 
     public User tryGetCurrentUser(HttpSession session) {
-        String currentUsername = (String) session.getAttribute("currentUser");
+        String currentUser = (String) session.getAttribute("currentUser");
 
-        if (currentUsername == null) {
-            throw new AuthorizationException(INVALID_AUTHENTICATION_ERROR);
+        if (currentUser == null) {
+            throw new AuthorizationException("No user logged in.");
         }
 
-        return userService.getByUsername(currentUsername);
+        return userService.getByUsername(currentUser);
+    }
+
+    public int tryGetUserId(HttpSession session) {
+        String currentUser = (String) session.getAttribute("currentUser");
+
+        if (currentUser == null) {
+            return 0;
+        }
+
+        return userService.getByUsername(currentUser).getId();
     }
 
     private String getUsername(String userInfo) {
@@ -72,6 +83,7 @@ public class AuthenticationHelper {
         return userInfo.substring(firstSpace + 1);
     }
 
-
-
+    public boolean verifyPostOwnershipOrAdmin(User user, Post post) {
+        return post.getCreatedBy().getId() == user.getId() || user.isAdmin();
+    }
 }

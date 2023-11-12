@@ -26,6 +26,13 @@ public class PostRepositoryImpl implements PostRepository {
 
 
     @Override
+    public List<Post> getAll() {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Post> query = session.createQuery("from Post", Post.class);
+            return query.list();
+        }
+    }
+    @Override
     public List<Post> getAll(FilterOptions filterOptions) {
         try (Session session = sessionFactory.openSession()) {
             List<String> filters = new ArrayList<>();
@@ -58,7 +65,6 @@ public class PostRepositoryImpl implements PostRepository {
                         .append(String.join(" and ", filters));
             }
             queryString.append(generateOrderBy(filterOptions));
-            System.out.print(queryString);
             Query<Post> query = session.createQuery(queryString.toString(), Post.class);
             query.setProperties(params);
             return query.list();
@@ -92,7 +98,7 @@ public class PostRepositoryImpl implements PostRepository {
     }
 
     @Override
-    public List<Post> getTenMostCommentedPosts(){
+    public List<Post> getMostCommentedPosts() {
         try (Session session = sessionFactory.openSession()) {
             NativeQuery<Post> query = session.createNativeQuery(
                     "select distinct p.post_id, p.title, p.content, p.creation_date, p.user_id, COUNT(*) as count " +

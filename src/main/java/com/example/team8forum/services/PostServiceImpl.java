@@ -6,22 +6,32 @@ import com.example.team8forum.helpers.ValidationHelpers;
 import com.example.team8forum.models.FilterOptions;
 import com.example.team8forum.models.Post;
 import com.example.team8forum.models.User;
+import com.example.team8forum.repositories.CommentRepositoryImpl;
 import com.example.team8forum.repositories.PostRepositoryImpl;
+import com.example.team8forum.repositories.contracts.CommentRepository;
+import com.example.team8forum.repositories.contracts.PostRepository;
 import com.example.team8forum.services.contracts.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-import static com.example.team8forum.helpers.ValidationHelpers.validateUserIsBlocked;
+import static com.example.team8forum.helpers.ValidationHelpers.*;
 
 @Service
 public class PostServiceImpl implements PostService {
 
-    private final PostRepositoryImpl repository;
+    private final PostRepository repository;
+    private final CommentRepository commentRepository;
     @Autowired
-    public PostServiceImpl(PostRepositoryImpl postRepository) {
+    public PostServiceImpl(PostRepository postRepository, CommentRepository commentRepository) {
         this.repository = postRepository;
+        this.commentRepository = commentRepository;
+    }
+
+    @Override
+    public List<Post> getAll() {
+        return repository.getAll();
     }
 
     @Override
@@ -36,7 +46,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public List<Post> getMostCommentedPosts() {
-        return repository.getTenMostCommentedPosts();
+        return repository.getMostCommentedPosts();
     }
 
     @Override
@@ -77,33 +87,25 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void update(Post post, User user) {
-        checkModifyPermissions(post.getId(), user);
-
-        boolean duplicateExists = true;
-        try {
-            Post existingPost = repository.get(post.getTitle());
-            if (existingPost.getId() == post.getId()) {
-                duplicateExists = false;
-            }
-        } catch (EntityNotFoundException e) {
-            duplicateExists = false;
-        }
-
-        if (duplicateExists) {
-            throw new EntityDuplicateException("Post", "title", post.getTitle());
-        }
-
+        validateUserIsBlocked(user);
+        validateUserIsDeleted(user);
+        validateUserIsAdminOrPostCreator(user, post);
         repository.update(post);
     }
 
     @Override
     public void delete(int id, User user) {
-        checkModifyPermissions(id, user);
-        repository.delete(id);
+        Post post = get(id);
+        validateUserIsBlocked(user);
+        validateUserIsDeleted(user);
+        validateUserIsAdminOrPostCreator(user, post);
+        post.getLikes().clear();
+        post.getComments().forEach(commentRepository::delete);
+        repository.delete(post.getId());
 
     }
     private void checkModifyPermissions(int postId, User user) {
         Post post = repository.get(postId);
-        ValidationHelpers.validateUserIsAdminOrPostCreator(user, post);
+        validateUserIsAdminOrPostCreator(user, post);
     }
 }

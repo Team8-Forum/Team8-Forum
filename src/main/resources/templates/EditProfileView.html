@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${user.getUsername()}">Title</title>
+    <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
+</head>
+<body>
+<div th:replace="HomeView.html :: navigation"></div>
+<div class="editUserMain_container">
+    <div class="editForm_container">
+        <div class="editForm_nav">
+            <a class="editForm_link--active" href="#">change user details</a>
+            <span class="editFormNav_separator">|</span>
+            <a href="#" th:href="@{/users/{id}/update-password(id=${userId})}">change password</a>
+            <span class="editFormNav_separator">|</span>
+        </div>
+        <form id="login_form" action="#" th:action="@{/users/{id}/update(id=${userId})}"
+              th:object="${user}"  method="post">
+            <div class="form_row">
+                <label class="user_form_data edit_form_label">First name:</label>
+                <input class="edit_form_input" th:value="${user.getFirstName()}" th:field="*{firstName}" type="text" name="first_name">
+            </div>
+            <div class="form_row">
+                <label class="user_form_data edit_form_label">Last name:</label>
+                <input class="edit_form_input" th:value="${user.getLastName()}" th:field="*{lastName}" type="text" name="last_name">
+            </div>
+            <div class="form_row">
+                <label class="user_form_data edit_form_label">Email:</label>
+                <input class="edit_form_input" th:value="${user.getEmail()}" th:field="*{email}" type="email" name="email">
+            </div>
+            <button class="button--lightOrange">
+                Apply changes
+            </button>
+
+        </form>
+    </div>
+</div>
+<script src="../static/profilePicture.js" th:src="@{/profilePicture.js}"></script>
+</body>
+</html>

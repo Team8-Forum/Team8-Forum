@@ -1,21 +1,19 @@
 package com.example.team8forum.models.dtos;
 
-import com.example.team8forum.models.User;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 
-import java.util.Set;
+public class PostCreateDto {
 
-public class PostDto {
-    @NotNull(message = "The post must have a title.")
-    @Size(min = 16, max = 64, message = "The title must be between 16 and 64 symbols")
+    @NotNull
+    @Size(min = 16, max = 64, message = "Title should be between 16 and 64 symbols")
     private String title;
 
-    @NotNull(message = "The post must have a content.")
-    @Size(min = 4, max = 8192, message = "The content must be between 32 symbols and 8192 symbols.")
+    @NotNull
+    @Size(min = 32, max = 8192, message = "Content should be between 32 and 8192 symbols")
     private String content;
 
-    public PostDto() {
+    public PostCreateDto(){
     }
 
     public String getTitle() {

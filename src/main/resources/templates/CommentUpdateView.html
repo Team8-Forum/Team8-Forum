@@ -2,21 +2,15 @@
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
-    <title th:text="${newPost.getTitle()}" >Title</title>
+    <title >Title</title>
     <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
 </head>
 <body>
 <div th:replace="HomeView.html :: navigation"></div>
 <div class="editPost_container">
-    <h2>Edit New Post</h2>
-    <form id="editPost_form" action="#" th:action="@{/posts/{postId}/update(postId=${postId})}"
-          th:object="${newPost}" method="post">
-        <div class="form_row">
-            <label for="title">Title</label>
-            <input type="text" id="title" placeholder="e.g. I can’t find IT job" name="title" th:field="*{title}">
-            <label class="error" th:errors="*{title}">Title must be between 16 and 64 symbols</label>
-        </div>
-
+    <h2>Edit Comment</h2>
+    <form id="editPost_form" action="#" th:action="@{/posts/{postId}/comments/{commentId}/update(postId=${postId}, commentId=${commentId})}"
+          th:object="${newComment}" method="post">
         <div class="form_row">
             <label for="content">Content</label>
             <textarea name="content" id="content" th:field="*{content}"></textarea>

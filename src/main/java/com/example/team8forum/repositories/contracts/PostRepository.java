@@ -9,13 +9,15 @@ import java.util.Optional;
 
 
 public interface PostRepository {
+
+    List<Post> getAll();
     List<Post> getAll(FilterOptions filterOptions);
 
     Post get(int id);
 
     Post get(String name);
 
-    List<Post> getTenMostCommentedPosts();
+    List<Post> getMostCommentedPosts();
 
     List<Post> getTenMostRecent();
 

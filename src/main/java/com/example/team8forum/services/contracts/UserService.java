@@ -8,6 +8,7 @@ import java.util.List;
 
 public interface UserService {
 
+    List<User> getAll();
     List<User> getAll(UserFilterOptions filterOptions,User user);
 
     User getById(int id);
@@ -26,5 +27,9 @@ public interface UserService {
 
     void updatePhoneNumber(User executingUser, int id, PhoneNumber newPhone);
 
+    void changePassword(User user, String oldPassword, String newPassword, String confirmedNewPassword);
+
     PhoneNumber deletePhoneNumber(User executingUser, int userToBeUpdatedId);
+
+    void delete(User executingUser, int id);
 }

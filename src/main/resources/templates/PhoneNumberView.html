@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${user.getUsername()}" > User </title>
+    <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
+</head>
+<body>
+<div th:replace="HomeView.html :: navigation"></div>
+<div class="editUserMain_container">
+    <div class="editForm_container">
+        <form id="login_form" action="#" th:action="@{/users/{id}/phone-number/update(id=${user.getId()})}"
+              th:object="${phoneNumber}"  method="post">
+            <div class="form_row">
+                <label class="user_form_data">Phone number:</label>
+                <input th:value="${phoneNumber}" th:field="*{phoneNumber}" type="text" name="phoneNumber">
+                <label class="error" th:errors="*{phoneNumber}">Phone number cannot be empty</label>
+            </div>
+            <button class="button--lightOrange">
+                Apply changes
+            </button>
+
+        </form>
+    </div>
+</div>
+<script src="../static/profilePicture.js" th:src="@{/profilePicture.js}"></script>
+</body>
+</html>

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
+</head>
+<body>
+<div th:replace="HomeView.html :: navigation"></div>
+<div class="main_container">
+    <h1 class="main_title">All active users</h1>
+    <div class="usersFilter_toolbar">
+        <form action="#" th:object="${filterUserDto}"  th:action="@{/users/filter}" method="post">
+            <span class="selectSort_label">Sort By:</span>
+            <span class="selectSort_label">Filter By:</span>
+            <select class="button--orange toolbar_button" onchange="filter(event)" name="">
+                <option  value="username">Username</option>
+                <option  value="email">Email</option>
+                <option  value="firstname">First name</option>
+                <option  value="lastname">Last name</option>
+            </select>
+            <input class="userFilter_input" onkeyup="mapSearchValue(event)" id="search" type="text" placeholder="filter">
+            <input class="userFilter_input" id="email"  th:field="*{email}" type="hidden">
+            <input class="userFilter_input" id="firstname" th:field="*{firstName}" type="hidden">
+            <input class="userFilter_input" id="lastname"  th:field="*{lastName}" type="hidden">
+            <input class="userFilter_input" id="username"  th:field="*{username}" type="hidden">
+            <button class="button--orange toolbar_button">Apply</button>
+        </form>
+    </div>
+    <div  class="grid">
+        <div th:each="user: ${users}" class="grid_item">
+            <div class="user_details">
+                <a href="#" th:href="@{/users/{id}(id=${user.getId()})}" class="userDetails_username"
+                   th:text="${user.getUsername()}">
+                    username
+                </a>
+                <span th:text="${user.getFirstName()} + ' ' + ${user.getLastName()} "></span>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="../static/users.js" th:src="@{/users.js}"></script>
+<script src="../static/profilePicture.js" th:src="@{/profilePicture.js}"></script>
+</body>
+</html>

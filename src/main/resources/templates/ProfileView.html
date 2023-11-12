@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${user.getUsername()}">Title</title>
+    <link href="../static/css/style.css" th:href="@{/css/style.css}" rel="stylesheet"/>
+</head>
+<body>
+<div th:replace="HomeView.html :: navigation"></div>
+<div class="main_container">
+    <div class="userInfo_container">
+        <div class="profileImage_container">
+            <img src="../static/images/user.png" class="user_img" th:src="@{/users/{id}/image(id=${userId})}" alt="">
+        </div>
+        <div>
+            <p class="username" th:text="${user.getUsername()}">sofi</p>
+            <p class="fullName" th:text="${user.getFirstName()} + ' ' + ${user.getLastName()}">Sofi Stoyanova</p>
+            <p class="fullName" th:text="'Blocked: '+ ${user.isBlocked()}">Blocked</p>
+            <p th:if="${isLoggedUserAdmin && isUserAdmin && !phoneNumber.equals('none')}" class="fullName" th:text="'Phone-number: '+ ${phoneNumber}">PhoneNumber</p>
+        </div>
+
+        <div class="user_controllers controllers">
+            <a th:if="${isLoggedUserAdmin || isLoggedUserProfileOwner}" href="#" th:href="@{/users/{id}/update(id=${userId})}">edit |</a>
+            <a th:if="${isLoggedUserAdmin || isLoggedUserProfileOwner}" href="#" onclick="deleteUser(event)" th:href="@{/users/{id}/delete(id=${userId})}">delete |</a>
+            <a th:if="${isLoggedUserAdmin && !isLoggedUserProfileOwner}" href="#" onclick="blockUser(event)" th:href="@{/users/{id}/block(id=${userId})}">block |</a>
+            <a th:if="${isLoggedUserAdmin && !isLoggedUserProfileOwner}" href="#" onclick="blockUser(event)" th:href="@{/users/{id}/admin(id=${userId})}">admin |</a>
+            <a th:if="${isUserAdmin && phoneNumber.equals('none') && isLoggedUserAdmin}" href="#"
+               th:href="@{/users/{id}/phone-number(id=${userId})}">
+                add phone-number |
+            </a>
+            <a href="#" th:if="${isUserAdmin && !phoneNumber.equals('none') && isLoggedUserAdmin}"
+               th:href="@{/users/{id}/phone-number/update(id=${userId})}">
+                edit phone-number |
+            </a>
+        </div>
+    </div>
+</div>
+<script src="../static/confirm.js" th:src="@{/confirm.js}"></script>
+<script src="../static/profilePicture.js" th:src="@{/profilePicture.js}"></script>
+</body>
+</html>

@@ -1,5 +1,6 @@
 package com.example.team8forum.services;
 
+import com.example.team8forum.exceptions.AuthorizationException;
 import com.example.team8forum.exceptions.EntityDuplicateException;
 import com.example.team8forum.exceptions.EntityNotFoundException;
 import com.example.team8forum.models.PhoneNumber;
@@ -11,6 +12,7 @@ import com.example.team8forum.services.contracts.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.InputMismatchException;
 import java.util.List;
 
 import static com.example.team8forum.helpers.ValidationHelpers.validateUserIsAdmin;
@@ -29,8 +31,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public List<User> getAll() {
+        return userRepository.getAll();
+    }
+    @Override
     public List<User> getAll(UserFilterOptions filterOptions, User user) {
-        validateUserIsAdmin(user);
         return userRepository.getAll(filterOptions);
     }
 
@@ -119,12 +124,33 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public void changePassword(User user, String oldPassword, String newPassword, String confirmedNewPassword) {
+        if(!user.getPassword().equals(oldPassword)) {
+            throw new AuthorizationException("Your old password is incorrect");
+        }
+
+        if(!newPassword.equals(confirmedNewPassword)) {
+            throw new InputMismatchException("New password do not match with confirmed one");
+        }
+        user.setPassword(newPassword);
+        userRepository.update(user);
+    }
+
+    @Override
     public PhoneNumber deletePhoneNumber(User executeUser, int id) {
         User userToGetPhoneDeleted = getById(id);
         validateUserIsAdminOrAccountOwner(executeUser, userToGetPhoneDeleted);
         validateUserIsAdmin(userToGetPhoneDeleted);
         phoneNumberRepository.delete(userToGetPhoneDeleted.getPhoneNumber());
         return userToGetPhoneDeleted.getPhoneNumber();
+    }
+
+    @Override
+    public void delete(User executingUser, int id) {
+        User userToBeDeleted = getById(id);
+        validateUserIsAdminOrAccountOwner(executingUser, userToBeDeleted);
+        userToBeDeleted.setDeleted(true);
+        userRepository.update(userToBeDeleted);
     }
 
     private void checkIfUserIsUnique(User user) {

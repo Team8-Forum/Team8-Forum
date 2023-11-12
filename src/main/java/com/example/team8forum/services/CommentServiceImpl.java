@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import static com.example.team8forum.helpers.ValidationHelpers.*;
 
+import java.util.List;
 import java.util.Set;
 
 @Service
@@ -29,9 +30,8 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public Set<Comment> get(int postId) {
-        Set<Comment> comments = commentRepository.findCommentsByPostId(postId);
-        return comments;
+    public List<Comment> get(int postId) {
+        return commentRepository.findCommentsByPostId(postId);
     }
 
     @Override
@@ -53,24 +53,20 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
-    public void update(int id, String content, User user) {
-        Comment comment = commentRepository.findCommentById(id);
-        if (comment == null){
-            throw new EntityNotFoundException("Comment", "id", String.valueOf(id));
-        }
-        comment.setComment(content);
-        validateUserIsAdminOrCommentCreator(user, comment);
+    public void updateComment(Comment comment, User user) {
         validateUserIsBlocked(user);
+        validateUserIsDeleted(user);
+        validateUserIsAdminOrCommentCreator(user, comment);
         commentRepository.update(comment);
     }
 
     @Override
-    public void delete(int id, User user) {
-        Comment comment = commentRepository.findCommentById(id);
-        if (!(user.isAdmin()|| comment.getCreatedBy().equals(user))) {
-            throw new AuthorizationException("You may not remove this comment.");
-        }
-        commentRepository.delete(id);
+    public void deleteComment(int commentId, User user) {
+        Comment comment = getCommentById(commentId);
+        validateUserIsBlocked(user);
+        validateUserIsDeleted(user);
+        validateUserIsAdminOrCommentCreator(user, comment);
+        commentRepository.delete(comment);
     }
 
 }
