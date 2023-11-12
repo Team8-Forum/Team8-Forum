@@ -104,7 +104,7 @@ body {
 }
 
 .main_container--left {
-    flex: 1;
+    flex: 0.3;
 }
 
 .categoriesList_container {
