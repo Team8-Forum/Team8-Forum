@@ -43,6 +43,7 @@ public class CommentServiceImpl implements CommentService {
     @Override
     public Comment create(Comment comment, User user, Post post) {
         validateUserIsBlocked(user);
+        validateUserIsDeleted(user);
        //Post post = comment.getPost();
         comment.setPost(post);
         comment.setComment(comment.getComment());

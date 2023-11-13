@@ -80,11 +80,12 @@ public class UserController {
 
         try {
             User existingUser = userService.getById(id);
+            User loggedUser = authenticationHelper.tryGetCurrentUser(session);
             String phoneNumber;
             try {
                 phoneNumber = phoneNumberService.getByUserId(id).getPhoneNumber();
             } catch (EntityNotFoundException e) {
-                if(!existingUser.isAdmin()) {
+                if(existingUser.isAdmin()) {
                     phoneNumber = "none";
                 } else {
                     phoneNumber = "only-user";
@@ -92,8 +93,8 @@ public class UserController {
             }
             model.addAttribute("user", existingUser);
             model.addAttribute("userId", id);
-            model.addAttribute("phoneNumber", phoneNumber );
-            model.addAttribute("isLoggedUserProfileOwner", id == user.getId());
+            model.addAttribute("phoneNumber", phoneNumber);
+            model.addAttribute("isLoggedUserProfileOwner", existingUser == loggedUser);
             model.addAttribute("isUserAdmin", existingUser.isAdmin());
             return "ProfileView";
         } catch (EntityNotFoundException e) {
@@ -210,6 +211,7 @@ public class UserController {
         try {
             PhoneNumber phoneNumber = phoneNumberMapper.dtoToObject(phoneNumberDTO);
             userService.createPhoneNumber(executingUser,id,phoneNumber);
+            model.addAttribute("phoneNumber", phoneNumberDTO);
             model.addAttribute("user",userToBeUpdated);
             return "redirect:/users/" + id;
         } catch (EntityNotFoundException e) {
@@ -237,7 +239,7 @@ public class UserController {
             phoneNumberDTO.setPhoneNumber(phoneNumber.getPhoneNumber());
             model.addAttribute("phoneNumber", phoneNumberDTO);
             model.addAttribute("user", userToBeUpdated);
-            return "PhoneNumberView";
+            return "PhoneNumberUpdateView";
         } catch (EntityNotFoundException e) {
             model.addAttribute("error", e.getMessage());
             return "ErrorView";
@@ -256,7 +258,7 @@ public class UserController {
         }
         if(errors.hasErrors()) {
             model.addAttribute("user", userToBeUpdated);
-            return "PhoneNumberView";
+            return "PhoneNumberUpdateView";
         }
         try {
             PhoneNumber phoneNumber = phoneNumberMapper.dtoToObject(phoneNumberDTO);
@@ -269,7 +271,7 @@ public class UserController {
         } catch (EntityDuplicateException e) {
             model.addAttribute("user", userToBeUpdated);
             errors.rejectValue("phoneNumber", "duplicate_phoneNumber", e.getMessage());
-            return "PhoneNumberView";
+            return "PhoneNumberUpdateView";
         }
     }
 
@@ -364,15 +366,16 @@ public class UserController {
 
     @ModelAttribute("isLoggedUserAdmin")
     public boolean populateIsLoggedUserAdmin(HttpSession session) {
+        boolean admin = false;
         try {
             User user = authenticationHelper.tryGetCurrentUser(session);
             if(user.isAdmin()) {
-                return true;
+                admin = true;
             }
         } catch (AuthorizationException e) {
             return false;
         }
-        return false;
+        return admin;
     }
 
     @ModelAttribute("getUserId")

@@ -10,7 +10,7 @@
 <div th:if="${isAuthenticated}" th:fragment="navigation" class="navigation_container">
     <div class="navigation_container--left">
         <a href="#" class="login_button" th:href="@{/}">Home</a>
-        <span class="logo_text">   Gaming Forum</span>
+        <span class="logo_text">Gaming Forum</span>
     </div>
     <div class="navigation_container--right">
         <a th:unless="${isAuthenticated}" class="login_button" href="#" th:href="@{/auth/login}" >login</a>
@@ -36,20 +36,7 @@
 
 <div class="main_container container--flex">
     <div class="main_container--left">
-        <div class="categoryContainer_footer">
-            <a class="list_link" href="#" th:href="@{/users}">
-                Active users:
-                <span th:text="${usersSize}">0</span>
-            </a>
-</br>
-            <a class="list_link" href="#"
-               th:href="@{/posts}">
-                All posts:
-                <span th:text="${postsSize}">0</span>
-            </a>
-        </div>
     </div>
-
     <div class="main_container--right">
         <div class="aagePostsContainer_Title">
             <h2>Posts</h2>
@@ -57,6 +44,16 @@
                 <option value="most-recent">10 Most Recent</option>
                 <option value="most-commented">10 Most Commented</option>
             </select>
+            <div>
+                <a class="list_link" href="#" th:href="@{/users}">
+                    Active users:
+                    <span th:text="${usersSize}">0</span>
+                </a>
+                <a class="list_link" href="#"
+                   th:href="@{/posts}">
+                    All posts:
+                    <span th:text="${postsSize}">0</span>
+                </a>
         </div>
         <div th:if="${posts.isEmpty()}">
             <h4>No posts yet...</h4>
@@ -113,6 +110,7 @@
                 </div>
             </div>
         </div>
+    </div>
     </div>
 </div>
 <script src="../static/profilePicture.js" th:src="@{/profilePicture.js}"></script>

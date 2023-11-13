@@ -264,7 +264,7 @@ public class PostController {
         try {
             Post post = postService.get(id);
 
-            if(user.isAdmin() && !post.getCreatedBy().getUsername().equals(user.getUsername())) {
+            if(!user.isAdmin() && !post.getCreatedBy().getUsername().equals(user.getUsername())) {
                 throw new AuthorizationException("You are unauthorized");
             }
 
@@ -304,7 +304,7 @@ public class PostController {
         }
     }
     @PostMapping("/{id}/likes")
-    public String votePost(@PathVariable int id, HttpSession session) {
+    public String likePost(@PathVariable int id, HttpSession session) {
         User user;
         try {
             user = authenticationHelper.tryGetCurrentUser(session);

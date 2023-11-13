@@ -30,7 +30,7 @@ public class UserRepositoryImpl implements UserRepository {
     public List<User> getAll() {
         try (Session session = sessionFactory.openSession()) {
             Query<User> query = session.createQuery("from User", User.class);
-            return query.list();
+            return query.stream().filter(user -> !user.isDeleted()).collect(Collectors.toList());
         }
     }
     @Override
@@ -69,7 +69,7 @@ public class UserRepositoryImpl implements UserRepository {
 
             Query<User> query = session.createQuery(queryString.toString(), User.class);
             query.setProperties(params);
-            return query.list();
+            return query.stream().filter(user -> !user.isDeleted()).collect(Collectors.toList());
         }
     }
 
@@ -77,7 +77,7 @@ public class UserRepositoryImpl implements UserRepository {
     public User getById(int id) {
         try (Session session = sessionFactory.openSession()) {
             User user = session.get(User.class, id);
-            if (user == null) {
+            if (user == null || user.isDeleted()) {
                 throw new EntityNotFoundException("User", id);
             }
             return user;

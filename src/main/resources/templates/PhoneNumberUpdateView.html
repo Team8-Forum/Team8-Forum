@@ -9,7 +9,7 @@
 <div th:replace="HomeView.html :: navigation"></div>
 <div class="editUserMain_container">
     <div class="editForm_container">
-        <form id="login_form" action="#" th:action="@{/users/{id}/phone-number(id=${user.getId()})}"
+        <form id="login_form" action="#" th:action="@{/users/{id}/phone-number/update(id=${user.getId()})}"
               th:object="${phoneNumber}"  method="post">
             <div class="form_row">
                 <label class="user_form_data">Phone number:</label>

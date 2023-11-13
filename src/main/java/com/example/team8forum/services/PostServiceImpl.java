@@ -56,6 +56,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public void create(Post post, User user) {
+        validateUserIsDeleted(user);
+        validateUserIsBlocked(user);
         boolean duplicateExists = true;
         try {
             repository.get(post.getTitle());
@@ -74,6 +76,7 @@ public class PostServiceImpl implements PostService {
     @Override
     public Post likePost(User user, int postId) {
         validateUserIsBlocked(user);
+        validateUserIsDeleted(user);
         Post post = get(postId);
         boolean voted = post.getLikes().contains(user);
         if (voted) {

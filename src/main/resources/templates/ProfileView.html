@@ -13,8 +13,8 @@
             <img src="../static/images/user.png" class="user_img" th:src="@{/users/{id}/image(id=${userId})}" alt="">
         </div>
         <div>
-            <p class="username" th:text="${user.getUsername()}">sofi</p>
-            <p class="fullName" th:text="${user.getFirstName()} + ' ' + ${user.getLastName()}">Sofi Stoyanova</p>
+            <p class="username" th:text="${user.getUsername()}">Ivan</p>
+            <p class="fullName" th:text="${user.getFirstName()} + ' ' + ${user.getLastName()}">Ivan Ivanov</p>
             <p class="fullName" th:text="'Blocked: '+ ${user.isBlocked()}">Blocked</p>
             <p th:if="${isLoggedUserAdmin && isUserAdmin && !phoneNumber.equals('none')}" class="fullName" th:text="'Phone-number: '+ ${phoneNumber}">PhoneNumber</p>
         </div>
@@ -23,7 +23,7 @@
             <a th:if="${isLoggedUserAdmin || isLoggedUserProfileOwner}" href="#" th:href="@{/users/{id}/update(id=${userId})}">edit |</a>
             <a th:if="${isLoggedUserAdmin || isLoggedUserProfileOwner}" href="#" onclick="deleteUser(event)" th:href="@{/users/{id}/delete(id=${userId})}">delete |</a>
             <a th:if="${isLoggedUserAdmin && !isLoggedUserProfileOwner}" href="#" onclick="blockUser(event)" th:href="@{/users/{id}/block(id=${userId})}">block |</a>
-            <a th:if="${isLoggedUserAdmin && !isLoggedUserProfileOwner}" href="#" onclick="blockUser(event)" th:href="@{/users/{id}/admin(id=${userId})}">admin |</a>
+            <a th:if="${isLoggedUserAdmin && !isLoggedUserProfileOwner}" href="#" onclick="adminUser(event)" th:href="@{/users/{id}/admin(id=${userId})}">admin |</a>
             <a th:if="${isUserAdmin && phoneNumber.equals('none') && isLoggedUserAdmin}" href="#"
                th:href="@{/users/{id}/phone-number(id=${userId})}">
                 add phone-number |
