@@ -6,9 +6,3 @@ for (var i = 0; i < reset_input_values.length; i++) {
 }
 //pick from drop down
 let currentSelectedOption = "#username"
-
-// search field
-function mapSearchValue(event){
-    const hiddenField = document.querySelector(currentSelectedOption)
-    hiddenField.value = event.target.value
-}

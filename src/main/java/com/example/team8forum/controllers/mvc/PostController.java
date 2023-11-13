@@ -45,7 +45,12 @@ public class PostController {
     }
 
     @GetMapping
-    public String showAllPosts(@ModelAttribute("filterPostDto") FilterPostDto filterPostDto, Model model) {
+    public String showAllPosts(@ModelAttribute("filterPostDto") FilterPostDto filterPostDto, Model model, HttpSession session) {
+        try{
+            User user = authenticationHelper.tryGetCurrentUser(session);
+        } catch (AuthorizationException e){
+            return "redirect:/auth/login";
+        }
         FilterOptions filterOptions = new FilterOptions(
                 filterPostDto.getTitle(),
                 null,
@@ -331,7 +336,7 @@ public class PostController {
     }
 
     @ModelAttribute("isLoggedUserABlocked")
-    public boolean populateIsLoggedUserAdmin(HttpSession session) {
+    public boolean populateIsLoggedUserBlocked(HttpSession session) {
         try {
             User user = authenticationHelper.tryGetCurrentUser(session);
             if(user.isBlocked()) {

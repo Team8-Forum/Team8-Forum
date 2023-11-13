@@ -69,8 +69,8 @@
                         </div>
                         <p class="comment_content" th:text="${comment.getComment()}"> Post content</p>
                         <div class="post_controllers controllers">
-                            <a th:if="${isAuthenticated && user.isAdmin()}"  href="" th:href="@{/posts/{postId}/comments/{commentId}/update(postId=${post.getId()}, commentId=${comment.commentId})}">edit |</a>
-                            <a th:if="${isAuthenticated && user.isAdmin()}"  href=""
+                            <a th:if="${isAuthenticated && user.isAdmin() || comment.getCreatedBy()==user}"  href="" th:href="@{/posts/{postId}/comments/{commentId}/update(postId=${post.getId()}, commentId=${comment.commentId})}">edit |</a>
+                            <a th:if="${isAuthenticated && user.isAdmin() || comment.getCreatedBy()==user}"  href=""
                                th:href="@{/posts/{postId}/comments/{commentId}/delete(postId=${post.getId()}, commentId=${comment.commentId})}">
                                 delete |
                             </a>
