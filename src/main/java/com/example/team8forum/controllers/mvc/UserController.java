@@ -41,7 +41,7 @@ public class UserController {
         this.authenticationHelper = authenticationHelper;
     }
     @GetMapping
-    public String showAllUsers(Model model, HttpSession session, FilterUserDto filterUserDto) {
+    public String showAllUsers(Model model, HttpSession session, @ModelAttribute("filterUserDto") FilterUserDto filterUserDto) {
 
         User executingUser;
         try {
@@ -60,7 +60,7 @@ public class UserController {
             User user = authenticationHelper.tryGetCurrentUser(session);
             List<User> users = userService.getAll(userFilterOptions, user);
             model.addAttribute("users", users);
-            model.addAttribute("filterUserDto", new FilterUserDto());
+            model.addAttribute("filterUserDto", filterUserDto);
 
             return "UsersView";
         } catch (EntityNotFoundException e) {

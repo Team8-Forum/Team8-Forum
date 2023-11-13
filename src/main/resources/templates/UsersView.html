@@ -10,21 +10,25 @@
 <div class="main_container">
     <h1 class="main_title">All active users</h1>
     <div class="usersFilter_toolbar">
-        <form action="#" th:object="${filterUserDto}"  th:action="@{/users/filter}" method="post">
-            <span class="selectSort_label">Sort By:</span>
-            <span class="selectSort_label">Filter By:</span>
-            <select class="button--orange toolbar_button" onchange="filter(event)" name="">
-                <option  value="username">Username</option>
-                <option  value="email">Email</option>
-                <option  value="firstname">First name</option>
-                <option  value="lastname">Last name</option>
-            </select>
-            <input class="userFilter_input" onkeyup="mapSearchValue(event)" id="search" type="text" placeholder="filter">
-            <input class="userFilter_input" id="email"  th:field="*{email}" type="hidden">
-            <input class="userFilter_input" id="firstname" th:field="*{firstName}" type="hidden">
-            <input class="userFilter_input" id="lastname"  th:field="*{lastName}" type="hidden">
-            <input class="userFilter_input" id="username"  th:field="*{username}" type="hidden">
-            <button class="button--orange toolbar_button">Apply</button>
+        <form id="filter_form" class="firstRowInner_container" action="#" th:action="@{/users}" th:object="${filterUserDto}" method="get">
+            <div>
+                <span class="selectSort_label">Sort By:</span>
+                <select th:field="*{sortBy}" class="button--orange toolbar_button" name="" id="sort">
+                    <option value="">Sort By</option>
+                    <option value="username">Username</option>
+                    <option value="firstName">First Name</option>
+                    <option value="lastName">Last Name</option>
+                    <option value="email">Email</option>
+                </select>
+                <select th:field="*{sortOrder}" class="button--orange toolbar_button" name="">
+                    <option value="">Sort Order</option>
+                    <option value="asc">Ascending</option>
+                    <option value="desc">Descending</option>
+                </select>
+                <span class="selectSort_label">Filter By:</span>
+                <input id="title" class="filter_input" type="text" placeholder="Username" th:field="*{username}"/>
+                <button class="button--orange toolbar_button">Apply</button>
+            </div>
         </form>
     </div>
     <div  class="grid">
