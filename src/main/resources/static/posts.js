@@ -45,17 +45,3 @@ for (var i = 0; i < reset_input_values.length; i++) {
     reset_input_values[i].value = '';
 }
 let currentSelectedOption = "#username"
-function filter(event) {
-    const nextValue = document.querySelector(currentSelectedOption).value
-    document.querySelector(currentSelectedOption).value = ''
-
-    const optionValue = event.target.value.toLowerCase()
-    currentSelectedOption = "#" + optionValue
-    console.log(currentSelectedOption)
-    document.querySelector(currentSelectedOption).value = nextValue
-}
-
-function mapSearchValue(event){
-    const hiddenField = document.querySelector(currentSelectedOption)
-    hiddenField.value = event.target.value
-}
